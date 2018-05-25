@@ -1,0 +1,71 @@
+package io.codegen.gwt.jsonoverlay.processor.generator;
+
+import com.squareup.javapoet.ClassName;
+
+import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
+import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.StringType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.SubType;
+
+public class OverlayTypeResolver implements JavaTypeVisitor<ClassName> {
+
+    public static final String OVERLAY_SUFFIX = "_JSONOverlay";
+
+    private final String packageName;
+
+    public OverlayTypeResolver(String packageName) {
+        this.packageName = packageName;
+    }
+
+    @Override
+    public ClassName visitPrimitiveType(PrimitiveType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitBoxedType(BoxedType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitStringType(StringType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitOptionalType(OptionalType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitListType(ListType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitOverlayType(OverlayType type) {
+        return ClassName.get(packageName, type.getOverlayType().simpleName() + OVERLAY_SUFFIX);
+    }
+
+    @Override
+    public ClassName visitEnumType(EnumType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitInheritedType(InheritedType type) {
+        return ClassName.get(packageName, type.getSuperType().simpleName() + OVERLAY_SUFFIX);
+    }
+
+    @Override
+    public ClassName visitSubType(SubType type) {
+        return ClassName.get(packageName, type.getSubType().simpleName() + OVERLAY_SUFFIX);
+    }
+
+}

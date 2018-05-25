@@ -1,0 +1,15 @@
+package io.codegen.gwt.jsonoverlay.runtime.jre;
+
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+/**
+ * GwtIncompatible annotation which instructs the GWT compiler to ignore the annotated class or method.
+ */
+@Retention(RetentionPolicy.CLASS)
+@Target({ElementType.TYPE, ElementType.METHOD, ElementType.CONSTRUCTOR, ElementType.FIELD})
+@Documented
+public @interface GwtIncompatible {}

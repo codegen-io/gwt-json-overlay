@@ -1,0 +1,175 @@
+package io.codegen.gwt.jsonoverlay.processor.generator;
+
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
+import javax.lang.model.element.Modifier;
+
+import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.FieldSpec;
+import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.ParameterizedTypeName;
+import com.squareup.javapoet.TypeName;
+import com.squareup.javapoet.TypeSpec;
+
+import io.codegen.gwt.jsonoverlay.processor.ClassNames;
+import io.codegen.gwt.jsonoverlay.processor.model.JavaGetter;
+import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
+
+public class OverlayGenerator {
+
+    public static final String OVERLAY_SUFFIX = "_JSONOverlay";
+
+    private final String packageName;
+
+    public OverlayGenerator(String packageName) {
+        this.packageName = packageName;
+    }
+
+    public TypeSpec generateOverlay(JavaInterface javaInterface) {
+        ClassName superType = javaInterface.getType().accept(new SuperTypeResolver());
+
+        ClassName overlayName = ClassName.get(packageName, superType.simpleName() + OVERLAY_SUFFIX);
+
+        TypeSpec.Builder typeSpec = TypeSpec.classBuilder(overlayName)
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
+                .addSuperinterface(superType);
+
+        typeSpec.addField(FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(Function.class),
+                overlayName.nestedClass("JsObject"), superType), "WRAPPER")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .initializer("$T::wrap", overlayName)
+                .build());
+
+        typeSpec.addField(FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(Function.class),
+                superType, overlayName.nestedClass("JsObject")), "UNWRAPPER")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC, Modifier.FINAL)
+                .initializer("$T::unwrap", overlayName)
+                .build());
+
+        ClassName jsSuperType = javaInterface.getType().accept(new JsObjectSuperTypeResolver(packageName));
+        TypeSpec jsObject = TypeSpec.classBuilder(overlayName.nestedClass("JsObject"))
+            .superclass(jsSuperType)
+            .addModifiers(Modifier.STATIC)
+            .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSTYPE)
+                    .addMember("isNative", "true")
+                    .addMember("namespace", "$T.GLOBAL", ClassNames.JSINTEROP_JSPACKAGE)
+                    .addMember("name", "$S", "Object")
+                    .build())
+            .addFields(javaInterface.getGetters().stream()
+                    .map(this::generateProperty)
+                    .collect(Collectors.toList()))
+            .build();
+
+        typeSpec.addType(jsObject);
+
+        /*
+        typeSpec.addType(TypeSpec.interfaceBuilder(overlayName.nestedClass("WrapperFunction"))
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addAnnotation(ClassNames.JSINTEROP_JSFUNCTION)
+                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Function.class), overlayName.nestedClass("JsObject"), superType))
+                .build());
+
+        typeSpec.addType(TypeSpec.interfaceBuilder(overlayName.nestedClass("UnwrapperFunction"))
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addAnnotation(ClassNames.JSINTEROP_JSFUNCTION)
+                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Function.class), superType, overlayName.nestedClass("JsObject")))
+                .build());
+       */
+
+        typeSpec.addField(overlayName.nestedClass("JsObject"), "object", Modifier.PRIVATE, Modifier.FINAL);
+        typeSpec.addMethod(MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PROTECTED)
+                .addCode(CodeBlock.builder()
+                        .addStatement("this.object = new $T()", overlayName.nestedClass("JsObject"))
+                        .build())
+                .build());
+        typeSpec.addMethod(MethodSpec.constructorBuilder()
+                .addModifiers(Modifier.PROTECTED)
+                .addParameter(overlayName.nestedClass("JsObject"), "object")
+                .addCode(CodeBlock.builder()
+                        .addStatement("this.object = object")
+                        .build())
+                .build());
+
+        typeSpec.addMethods(javaInterface.getGetters().stream()
+                .map(this::generateMethod)
+                .collect(Collectors.toList()));
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("parse")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(String.class, "json")
+                .addParameter(ClassNames.JSON_FACTORY, "factory")
+                .returns(superType)
+                .addCode(CodeBlock.builder()
+                        .addStatement("return factory.createParser($T.WRAPPER).fromJSON(json)", overlayName)
+                        .build())
+                .build());
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("serialize")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(superType, "object")
+                .addParameter(ClassNames.JSON_FACTORY, "factory")
+                .returns(String.class)
+                .addCode(CodeBlock.builder()
+                        .addStatement("return factory.createSerializer($T.UNWRAPPER).toJSON(object)", overlayName)
+                        .build())
+                .build());
+
+        CodeBlock wrapper = javaInterface.getType().accept(new WrapStatementGenerator(packageName));
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("wrap")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(Object.class, "object")
+                .returns(superType)
+                .addCode(CodeBlock.builder()
+                        .beginControlFlow("if (object instanceof $T)", overlayName.nestedClass("JsObject"))
+                            //.addStatement("return new $T(($T) object)", overlayName, overlayName.nestedClass("JsObject"))
+                            .add(wrapper)
+                        .endControlFlow()
+                        .addStatement("throw new $T(\"Object '\" + object + \"' isn't of type $L\")",
+                                IllegalArgumentException.class, overlayName.nestedClass("JsObject").toString())
+                        .build())
+                .build());
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("unwrap")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .addParameter(Object.class, "object")
+                .returns(overlayName.nestedClass("JsObject"))
+                .addCode(CodeBlock.builder()
+                        .beginControlFlow("if (object instanceof $T)", overlayName)
+                            .addStatement("return (($T) object).object", overlayName)
+                        .endControlFlow()
+                        .addStatement("throw new $T(\"Object '\" + object + \"' isn't of type $L\")",
+                                IllegalArgumentException.class, overlayName.toString())
+                        .build())
+                .build());
+
+        return typeSpec.build();
+    }
+
+    private FieldSpec generateProperty(JavaGetter getter) {
+        TypeName type = getter.getPropertyType().accept(new FieldTypeResolver(packageName));
+        return FieldSpec.builder(type, getter.getMethodName())
+                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
+                    .addMember("name", "$S", getter.getPropertyName())
+                    .build())
+                .build();
+    }
+
+    private MethodSpec generateMethod(JavaGetter getter) {
+        CodeBlock translator = getter.getPropertyType().accept(new FieldTranslatorGenerator(packageName, getter.getMethodName()));
+
+        TypeName returnType = getter.getPropertyType().accept(new ReturnTypeResolver());
+
+        return MethodSpec.methodBuilder(getter.getMethodName())
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .returns(returnType)
+                .addCode(translator)
+                .build();
+    }
+
+}
