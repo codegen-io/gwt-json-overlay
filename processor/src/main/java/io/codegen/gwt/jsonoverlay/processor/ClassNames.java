@@ -27,7 +27,11 @@ public class ClassNames {
 
     public static final ClassName GWT_INCOMPATIBLE = ClassName.get("com.google.gwt.core.shared", "GwtIncompatible");
 
+    public static final ClassName GWT_JAVASCRIPTOBJECT = ClassName.get("com.google.gwt.core.client", "JavaScriptObject");
+
     public static final ClassName JSON_OVERLAY_ANNOTATION = ClassName.get(JSONOVERLAY_ANNOTATIONS_PACKAGE, "JsonOverlay");
+
+    public static final ClassName JSON_OVERLAY_FACTORY_ANNOTATION = ClassName.get(JSONOVERLAY_ANNOTATIONS_PACKAGE, "JsonOverlayFactory");
 
     public static final ClassName JSON_FACTORY = ClassName.get(JSONOVERLAY_RUNTIME_PACKAGE, "JsonFactory");
 

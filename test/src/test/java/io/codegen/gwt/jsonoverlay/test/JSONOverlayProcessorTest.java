@@ -36,10 +36,6 @@ public class JSONOverlayProcessorTest {
 
         assertThat(compilation).generatedSourceFile("test/overlay/StringType_JSONOverlay")
             .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/StringType_JSONOverlay.java"));
-
-//        assertThat(compilation).generatedSourceFile("test/overlay/IntType_JSONOverlay")
-//            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/IntType_JSONOverlay.java"));
-
     }
 
     @Test
@@ -65,6 +61,24 @@ public class JSONOverlayProcessorTest {
         assertThat(compilation).generatedSourceFile("test/inheritance/InheritanceSubB_JSONOverlay")
             .hasSourceEquivalentTo(JavaFileObjects.forResource("test/inheritance/InheritanceSubB_JSONOverlay.java"));
 
+    }
+
+    @Test
+    public void testFactory() throws IOException {
+        Compilation compilation = compiler.compile(
+                JavaFileObjects.forResource("test/overlay/OverlayFactory.java"),
+                JavaFileObjects.forResource("test/BasicType.java"));
+
+        assertThat(compilation).succeeded();
+
+        assertThat(compilation).generatedSourceFile("test/overlay/BasicType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/BasicType_JSONOverlay.java"));
+
+        assertThat(compilation).generatedSourceFile("test/overlay/StringType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/StringType_JSONOverlay.java"));
+
+        assertThat(compilation).generatedSourceFile("test/overlay/OverlayFactory_JSONOverlayFactory")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/OverlayFactory_JSONOverlayFactory.java"));
     }
 
 }
