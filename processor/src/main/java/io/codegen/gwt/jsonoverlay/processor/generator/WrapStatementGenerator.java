@@ -8,6 +8,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -44,6 +45,11 @@ public class WrapStatementGenerator implements JavaTypeVisitor<CodeBlock> {
 
     @Override
     public CodeBlock visitListType(ListType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public CodeBlock visitMapType(MapType type) {
         throw new UnsupportedOperationException();
     }
 

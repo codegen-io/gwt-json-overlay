@@ -64,6 +64,22 @@ public class JSONOverlayProcessorTest {
     }
 
     @Test
+    public void testMap() throws IOException {
+        Compilation compilation = compiler.compile(
+                JavaFileObjects.forResource("test/map/package-info.java"),
+                JavaFileObjects.forResource("test/MapType.java"),
+                JavaFileObjects.forResource("test/StringType.java"));
+
+        assertThat(compilation).succeeded();
+
+        assertThat(compilation).generatedSourceFile("test/map/MapType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/map/MapType_JSONOverlay.java"));
+
+        assertThat(compilation).generatedSourceFile("test/map/StringType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/map/StringType_JSONOverlay.java"));
+    }
+
+    @Test
     public void testFactory() throws IOException {
         Compilation compilation = compiler.compile(
                 JavaFileObjects.forResource("test/overlay/OverlayFactory.java"),

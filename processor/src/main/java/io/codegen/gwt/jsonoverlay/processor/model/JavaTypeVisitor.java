@@ -4,6 +4,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -21,6 +22,8 @@ public interface JavaTypeVisitor<R> {
     R visitOptionalType(OptionalType type);
 
     R visitListType(ListType type);
+
+    R visitMapType(MapType type);
 
     R visitOverlayType(OverlayType type);
 

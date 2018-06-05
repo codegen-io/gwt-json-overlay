@@ -14,12 +14,17 @@ public final class OverlayFactory_JSONOverlayFactory implements OverlayFactory {
 
   @Override
   public JavaScriptObject asJavascripObject(BasicType argument) {
-    Object object = BasicType_JSONOverlay.unwrap(argument);
-    return (JavaScriptObject) object;
+    return cast(BasicType_JSONOverlay.unwrap(argument));
   }
 
   @Override
   public StringType asStringType(JavaScriptObject argument) {
     return StringType_JSONOverlay.wrap(argument);
   }
+
+  @SuppressWarnings("unchecked")
+  static final <T> T cast(Object object) {
+    return (T) object;
+  }
+
 }

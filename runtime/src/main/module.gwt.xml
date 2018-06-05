@@ -2,5 +2,6 @@
 <module>
 
   <source path="jsonoverlay/runtime" />
+  <inherits name="jsinterop.base.Base" />
 
 </module>

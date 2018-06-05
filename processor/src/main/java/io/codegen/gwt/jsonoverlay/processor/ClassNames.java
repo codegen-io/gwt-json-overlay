@@ -23,6 +23,8 @@ public class ClassNames {
 
     public static final ClassName JSINTEROP_JSPACKAGE = ClassName.get(JSINTEROP_PACKAGE, "JsPackage");
 
+    public static final ClassName JSINTEROP_BASE_JSPROPERTYMAP = ClassName.get("jsinterop.base", "JsPropertyMap");
+
     public static final ClassName GWT_SHARED_HELPER = ClassName.get("com.google.gwt.core.shared", "GWT");
 
     public static final ClassName GWT_INCOMPATIBLE = ClassName.get("com.google.gwt.core.shared", "GwtIncompatible");

@@ -7,6 +7,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -43,6 +44,11 @@ public class JsObjectSuperTypeResolver implements JavaTypeVisitor<ClassName> {
 
     @Override
     public ClassName visitListType(ListType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public ClassName visitMapType(MapType type) {
         throw new UnsupportedOperationException();
     }
 

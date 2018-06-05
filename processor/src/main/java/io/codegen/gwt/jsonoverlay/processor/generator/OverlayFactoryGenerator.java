@@ -4,11 +4,14 @@ import java.util.stream.Collectors;
 
 import javax.lang.model.element.Modifier;
 
+import com.squareup.javapoet.AnnotationSpec;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.MethodSpec;
+import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
+import com.squareup.javapoet.TypeVariableName;
 
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
@@ -42,6 +45,17 @@ public class OverlayFactoryGenerator {
                 .map(this::generateMethod)
                 .collect(Collectors.toList()));
 
+        typeSpec.addMethod(MethodSpec.methodBuilder("cast")
+                .addAnnotation(AnnotationSpec.builder(SuppressWarnings.class)
+                        .addMember("value", "$S", "unchecked")
+                        .build())
+                .addModifiers(Modifier.STATIC, Modifier.FINAL)
+                .addParameter(Object.class, "object")
+                .addTypeVariable(TypeVariableName.get("T"))
+                .returns(TypeVariableName.get("T"))
+                .addStatement("return (T) object")
+                .build());
+
         return typeSpec.build();
     }
 
@@ -52,8 +66,7 @@ public class OverlayFactoryGenerator {
         CodeBlock code;
         if (ClassNames.GWT_JAVASCRIPTOBJECT.equals(returnType)) {
             code = CodeBlock.builder()
-                    .addStatement("$T object = $T.unwrap(argument)", Object.class, ClassName.get(packageName, argumentType.simpleName() + OVERLAY_SUFFIX))
-                    .addStatement("return ($T) object", ClassNames.GWT_JAVASCRIPTOBJECT)
+                    .addStatement("return cast($T.unwrap(argument))", ClassName.get(packageName, argumentType.simpleName() + OVERLAY_SUFFIX))
                     .build();
         } else {
             code = CodeBlock.builder()

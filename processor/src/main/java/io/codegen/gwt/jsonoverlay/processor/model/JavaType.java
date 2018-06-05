@@ -8,6 +8,7 @@ public interface JavaType {
         STRING,
         OPTIONAL,
         LIST,
+        MAP,
         OVERLAY,
         INHERITED,
         SUB,

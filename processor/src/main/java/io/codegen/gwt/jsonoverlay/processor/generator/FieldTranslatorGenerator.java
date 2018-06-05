@@ -1,7 +1,10 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -13,6 +16,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -76,6 +80,28 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
                         CodeBlock.of("return $T.of(object.$L)", Stream.class, methodName),
                         mapper,
                         CodeBlock.of(".collect($T.toList())", Collectors.class))
+                        .filter(code -> !code.isEmpty())
+                        .collect(CodeBlock.joining("\n")))
+                .build();
+    }
+
+    @Override
+    public CodeBlock visitMapType(MapType type) {
+        CodeBlock mapper = type.getValueType().accept(new FieldMapperGenerator(packageName));
+
+        return CodeBlock.builder()
+                .beginControlFlow("if (object.$L == null)", methodName)
+                .addStatement("return $T.emptyMap()", Collections.class)
+                .endControlFlow()
+
+                .addStatement("$T<$T> keys = new $T<>()", List.class, String.class, ArrayList.class)
+                .addStatement("object.$L.forEach(keys::add)", methodName)
+                .add("return keys.stream()\n")
+                .addStatement(Stream.of(
+                        CodeBlock.of(".collect($T.toMap($T.identity(),", Collectors.class, Function.class),
+                        CodeBlock.of("key -> $T.ofNullable(object.$L.get(key))", Optional.class, methodName),
+                        mapper,
+                        CodeBlock.of(".orElse(null)))"))
                         .filter(code -> !code.isEmpty())
                         .collect(CodeBlock.joining("\n")))
                 .build();

@@ -26,6 +26,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.StringType;
@@ -83,10 +84,19 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
             ClassName name = type.asElement().accept(new ElementNameResolver(), null);
 
             if (ClassName.get(List.class).equals(name)) {
-                JavaType elementType = type.getTypeArguments().iterator().next().accept(new TypeResolver(consumer), null);
+                JavaType elementType = type.getTypeArguments().get(0).accept(new TypeResolver(consumer), null);
                 return ListType.builder()
                         .elementType(elementType)
                         .build();
+            }
+
+            if (ClassName.get(Map.class).equals(name)) {
+                if (ClassName.get(String.class).equals(ClassName.get(type.getTypeArguments().get(0)))) {
+                    JavaType valueType = type.getTypeArguments().get(1).accept(new TypeResolver(consumer), null);
+                    return MapType.builder()
+                            .valueType(valueType)
+                            .build();
+                }
             }
 
             if (name.packageName().startsWith("java.") || name.packageName().startsWith("javax.")) {

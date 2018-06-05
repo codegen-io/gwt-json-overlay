@@ -1,6 +1,7 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import com.squareup.javapoet.ClassName;
@@ -10,6 +11,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -41,6 +43,11 @@ public class SuperTypeResolver implements JavaTypeVisitor<ClassName> {
     @Override
     public ClassName visitListType(ListType type) {
         return ClassName.get(List.class);
+    }
+
+    @Override
+    public ClassName visitMapType(MapType type) {
+        return ClassName.get(Map.class);
     }
 
     @Override

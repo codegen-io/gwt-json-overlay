@@ -28,6 +28,10 @@
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.google.jsinterop</groupId>
+      <artifactId>base</artifactId>
+    </dependency>
 
     <dependency>
       <groupId>org.immutables</groupId>

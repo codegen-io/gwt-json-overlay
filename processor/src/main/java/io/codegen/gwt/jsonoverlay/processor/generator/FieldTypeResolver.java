@@ -2,13 +2,16 @@ package io.codegen.gwt.jsonoverlay.processor.generator;
 
 import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
+import com.squareup.javapoet.ParameterizedTypeName;
 import com.squareup.javapoet.TypeName;
 
+import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OverlayType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
@@ -46,6 +49,12 @@ public class FieldTypeResolver implements JavaTypeVisitor<TypeName> {
     @Override
     public TypeName visitListType(ListType type) {
         return ArrayTypeName.of(type.getElementType().accept(new FieldTypeResolver(packageName)));
+    }
+
+    @Override
+    public TypeName visitMapType(MapType type) {
+        return ParameterizedTypeName.get(ClassNames.JSINTEROP_BASE_JSPROPERTYMAP,
+                type.getValueType().accept(new FieldTypeResolver(packageName)));
     }
 
     @Override
