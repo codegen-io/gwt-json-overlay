@@ -48,8 +48,8 @@ public class TypeMapper {
     /**
      * Convert the given {@link Element} to an {@link ExecutableElement}.
      *
-     * @param element
-     * @return
+     * @param element the element
+     * @return the element as an executable element
      */
     public static ExecutableElement asExecutable(Element element) {
         return element.accept(EXECUTABLE_VISITOR, null);
@@ -58,8 +58,8 @@ public class TypeMapper {
     /**
      * Convert the given {@link Element} to a {@link TypeElement}.
      *
-     * @param element
-     * @return
+     * @param element the element
+     * @return the element as a type element
      */
     public static TypeElement asType(Element element) {
         return element.accept(TYPE_VISITOR, null);
@@ -68,8 +68,8 @@ public class TypeMapper {
     /**
      * Convert the given {@link TypeMirror} to a {@link DeclaredType}.
      *
-     * @param element
-     * @return
+     * @param element the type mirror
+     * @return the element as a declared type
      */
     public static DeclaredType asDeclaredType(TypeMirror element) {
         return element.accept(DECLARED_TYPE_VISITOR, null);
@@ -78,8 +78,8 @@ public class TypeMapper {
     /**
      * Convert the given {@link TypeMirror} to a {@link ArrayType}.
      *
-     * @param element
-     * @return
+     * @param element the element
+     * @return the element as an array type
      */
     public static ArrayType asArrayType(TypeMirror element) {
         return element.accept(ARRAY_TYPE_VISITOR, null);

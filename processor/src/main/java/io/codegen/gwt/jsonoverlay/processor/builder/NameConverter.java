@@ -6,6 +6,9 @@ public class NameConverter {
 
     /**
      * E.g. convert "someCaseName" to "SOME_CASE_NAME"
+     *
+     * @param name the camel case name to convert
+     * @return the name in snake case
      */
     public static String convertCamelcaseToSnakecase(String name) {
         return name.replaceAll("(.)(\\p{Upper})", "$1_$2");
@@ -13,6 +16,9 @@ public class NameConverter {
 
     /**
      * E.g. convert "SOME_CASE_NAME" to "someCaseName"
+     *
+     * @param name the snake case name to convert
+     * @return the name in lower camel case
      */
     public static String convertSnakeCaseToLowerCamelCase(String name) {
         String[] values = name.split("_");
@@ -30,6 +36,9 @@ public class NameConverter {
 
     /**
      * E.g. convert "SomeCaseName" to "someCaseName"
+     *
+     * @param name the upper camel case name to convert
+     * @return the name in lower camel case
      */
     public static String convertUpperCamelCaseToLowerCamelCase(String name) {
         StringBuilder result = new StringBuilder();
