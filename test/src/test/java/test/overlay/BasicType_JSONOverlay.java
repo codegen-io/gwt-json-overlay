@@ -40,6 +40,11 @@ public final class BasicType_JSONOverlay implements BasicType {
   }
 
   @Override
+  public Long getBoxedLong() {
+    return object.getBoxedLong;
+  }
+
+  @Override
   public StringType getStringType() {
     return StringType_JSONOverlay.WRAPPER.apply(object.getStringType);
   }
@@ -116,6 +121,11 @@ public final class BasicType_JSONOverlay implements BasicType {
         name = "int"
     )
     int getInt;
+
+    @JsProperty(
+        name = "boxedLong"
+    )
+    Long getBoxedLong;
 
     @JsProperty(
         name = "stringType"

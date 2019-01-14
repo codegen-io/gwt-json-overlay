@@ -9,6 +9,8 @@ public interface BasicType {
 
     int getInt();
 
+    Long getBoxedLong();
+
     StringType getStringType();
 
     List<String> getStringList();

@@ -23,6 +23,7 @@ import com.squareup.javapoet.TypeName;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.TypeMapper;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
@@ -67,6 +68,12 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
             if (ClassName.get(String.class).equals(name)) {
                 return StringType.builder()
                         .stringType(name)
+                        .build();
+            }
+
+            if (name.isBoxedPrimitive()) {
+                return BoxedType.builder()
+                        .boxedType(name)
                         .build();
             }
 
