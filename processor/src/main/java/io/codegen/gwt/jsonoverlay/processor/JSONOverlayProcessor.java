@@ -17,6 +17,8 @@ import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
+import javax.annotation.processing.SupportedSourceVersion;
+import javax.lang.model.SourceVersion;
 import javax.lang.model.element.AnnotationMirror;
 import javax.lang.model.element.AnnotationValue;
 import javax.lang.model.element.Element;
@@ -24,9 +26,7 @@ import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.lang.model.element.VariableElement;
 import javax.lang.model.type.DeclaredType;
-import javax.lang.model.type.TypeKind;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
 import javax.tools.Diagnostic.Kind;
@@ -39,15 +39,14 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import io.codegen.gwt.jsonoverlay.processor.builder.ElementNameResolver;
 import io.codegen.gwt.jsonoverlay.processor.builder.ModelBuilder;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayFactoryGenerator;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayGenerator;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
-import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod.Builder;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaFactory;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
 
+@SupportedSourceVersion(SourceVersion.RELEASE_8)
 @Metainf.Service(Processor.class)
 public class JSONOverlayProcessor extends AbstractProcessor {
 

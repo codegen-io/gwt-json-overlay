@@ -97,4 +97,20 @@ public class JSONOverlayProcessorTest {
             .hasSourceEquivalentTo(JavaFileObjects.forResource("test/overlay/OverlayFactory_JSONOverlayFactory.java"));
     }
 
+    @Test
+    public void testSetter() throws IOException {
+        Compilation compilation = compiler.compile(
+                JavaFileObjects.forResource("test/setter/package-info.java"),
+                JavaFileObjects.forResource("test/SetterType.java")
+                );
+
+        assertThat(compilation).succeeded();
+
+        assertThat(compilation).generatedSourceFile("test/setter/SetterType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/setter/SetterType_JSONOverlay.java"));
+
+        assertThat(compilation).generatedSourceFile("test/setter/StringType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/setter/StringType_JSONOverlay.java"));
+    }
+
 }

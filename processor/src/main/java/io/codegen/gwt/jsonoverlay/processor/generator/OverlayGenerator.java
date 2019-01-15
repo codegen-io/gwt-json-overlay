@@ -95,7 +95,12 @@ public class OverlayGenerator {
                 .build());
 
         typeSpec.addMethods(javaInterface.getGetters().stream()
-                .map(this::generateMethod)
+                .map(this::generateGetMethod)
+                .collect(Collectors.toList()));
+
+        typeSpec.addMethods(javaInterface.getGetters().stream()
+                .filter(JavaGetter::hasSetter)
+                .map(this::generateSetMethod)
                 .collect(Collectors.toList()));
 
         typeSpec.addMethod(MethodSpec.methodBuilder("parse")
@@ -126,7 +131,6 @@ public class OverlayGenerator {
                 .returns(superType)
                 .addCode(CodeBlock.builder()
                         .beginControlFlow("if (object instanceof $T)", overlayName.nestedClass("JsObject"))
-                            //.addStatement("return new $T(($T) object)", overlayName, overlayName.nestedClass("JsObject"))
                             .add(wrapper)
                         .endControlFlow()
                         .addStatement("throw new $T(\"Object '\" + object + \"' isn't of type $L\")",
@@ -159,8 +163,8 @@ public class OverlayGenerator {
                 .build();
     }
 
-    private MethodSpec generateMethod(JavaGetter getter) {
-        CodeBlock translator = getter.getPropertyType().accept(new FieldTranslatorGenerator(packageName, getter.getMethodName()));
+    private MethodSpec generateGetMethod(JavaGetter getter) {
+        CodeBlock translator = getter.getPropertyType().accept(new FieldGetterTranslatorGenerator(packageName, getter.getMethodName()));
 
         TypeName returnType = getter.getPropertyType().accept(new ReturnTypeResolver());
 
@@ -168,6 +172,19 @@ public class OverlayGenerator {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .returns(returnType)
+                .addCode(translator)
+                .build();
+    }
+
+    private MethodSpec generateSetMethod(JavaGetter getter) {
+        CodeBlock translator = getter.getPropertyType().accept(new FieldSetterTranslatorGenerator(packageName, getter.getMethodName()));
+
+        TypeName returnType = getter.getPropertyType().accept(new ReturnTypeResolver());
+
+        return MethodSpec.methodBuilder("set" + getter.getMethodName().substring(3))
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(returnType, "value")
                 .addCode(translator)
                 .build();
     }

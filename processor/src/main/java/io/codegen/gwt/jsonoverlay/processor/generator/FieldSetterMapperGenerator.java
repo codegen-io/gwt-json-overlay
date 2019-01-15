@@ -15,13 +15,13 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.StringType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.SubType;
 
-public class FieldMapperGenerator implements JavaTypeVisitor<CodeBlock> {
+public class FieldSetterMapperGenerator implements JavaTypeVisitor<CodeBlock> {
 
     private static final CodeBlock EMPTY_CODEBLOCK = CodeBlock.builder().build();
 
     private final String packageName;
 
-    public FieldMapperGenerator(String packageName) {
+    public FieldSetterMapperGenerator(String packageName) {
         this.packageName = packageName;
     }
 
@@ -60,7 +60,7 @@ public class FieldMapperGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitOverlayType(OverlayType type) {
         ClassName overlay = type.getOverlayType();
         return CodeBlock.builder()
-                .add(".map($T.WRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
+                .add(".map($T.UNWRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
     }
 
@@ -73,7 +73,7 @@ public class FieldMapperGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitInheritedType(InheritedType type) {
         ClassName overlay = type.getSuperType();
         return CodeBlock.builder()
-                .add(".map($T.WRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
+                .add(".map($T.UNWRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
     }
 
@@ -81,7 +81,7 @@ public class FieldMapperGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitSubType(SubType type) {
         ClassName overlay = type.getSubType();
         return CodeBlock.builder()
-                .add(".map($T.WRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
+                .add(".map($T.UNWRAPPER)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
     }
 

@@ -23,6 +23,8 @@ public interface JavaGetter {
      */
     JavaType getPropertyType();
 
+    boolean hasSetter();
+
     public static Builder builder() {
         return new Builder();
     }

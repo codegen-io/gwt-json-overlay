@@ -1,16 +1,11 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.function.Function;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 
+import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
@@ -23,46 +18,48 @@ import io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.StringType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.SubType;
 
-public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
+public class FieldSetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
 
     private final String packageName;
 
-    private final String methodName;
+    private final String propertyName;
 
-    public FieldTranslatorGenerator(String packageName, String methodName) {
+    public FieldSetterTranslatorGenerator(String packageName, String propertyName) {
         this.packageName = packageName;
-        this.methodName = methodName;
+        this.propertyName = propertyName;
     }
 
     @Override
     public CodeBlock visitPrimitiveType(PrimitiveType type) {
         return CodeBlock.builder()
-                .addStatement("return object.$L", methodName)
+                .addStatement("object.$L = value", propertyName)
                 .build();
     }
 
     @Override
     public CodeBlock visitBoxedType(BoxedType type) {
         return CodeBlock.builder()
-                .addStatement("return object.$L", methodName)
+                .addStatement("object.$L = value", propertyName)
                 .build();
     }
 
     @Override
     public CodeBlock visitStringType(StringType type) {
         return CodeBlock.builder()
-                .addStatement("return object.$L", methodName)
+                .addStatement("object.$L = value", propertyName)
                 .build();
     }
 
     @Override
     public CodeBlock visitOptionalType(OptionalType type) {
-        CodeBlock mapper = type.getElementType().accept(new FieldMapperGenerator(packageName));
+        CodeBlock mapper = type.getElementType().accept(new FieldSetterMapperGenerator(packageName));
 
         return CodeBlock.builder()
                 .addStatement(Stream.of(
-                        CodeBlock.of("return $T.ofNullable(object.$L)", Optional.class, methodName),
-                        mapper)
+                        CodeBlock.of("object.$L = value", propertyName),
+                        mapper,
+                        CodeBlock.of(".orElse(null)")
+                        )
                         .filter(code -> !code.isEmpty())
                         .collect(CodeBlock.joining("\n")))
                 .build();
@@ -70,16 +67,14 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
 
     @Override
     public CodeBlock visitListType(ListType type) {
-        CodeBlock mapper = type.getElementType().accept(new FieldMapperGenerator(packageName));
+        CodeBlock typeMapper = type.getElementType().accept(new FieldSetterMapperGenerator(packageName));
+        CodeBlock arrayMapper = type.getElementType().accept(new FieldSetterListMapperGenerator(packageName));
 
         return CodeBlock.builder()
-                .beginControlFlow("if (object.$L == null)", methodName)
-                    .addStatement("return $T.emptyList()", Collections.class)
-                .endControlFlow()
                 .addStatement(Stream.of(
-                        CodeBlock.of("return $T.of(object.$L)", Stream.class, methodName),
-                        mapper,
-                        CodeBlock.of(".collect($T.toList())", Collectors.class))
+                        CodeBlock.of("object.$L = value.stream()", propertyName),
+                        typeMapper,
+                        arrayMapper)
                         .filter(code -> !code.isEmpty())
                         .collect(CodeBlock.joining("\n")))
                 .build();
@@ -87,19 +82,12 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
 
     @Override
     public CodeBlock visitMapType(MapType type) {
-        CodeBlock mapper = type.getValueType().accept(new FieldMapperGenerator(packageName));
+        CodeBlock mapper = type.getValueType().accept(new FieldSetterMapperGenerator(packageName));
 
         return CodeBlock.builder()
-                .beginControlFlow("if (object.$L == null)", methodName)
-                .addStatement("return $T.emptyMap()", Collections.class)
-                .endControlFlow()
-
-                .addStatement("$T<$T> keys = new $T<>()", List.class, String.class, ArrayList.class)
-                .addStatement("object.$L.forEach(keys::add)", methodName)
-                .add("return keys.stream()\n")
+                .addStatement("object.$L = $T.cast($T.of())", propertyName, ClassNames.JSINTEROP_BASE_JS, ClassNames.JSINTEROP_BASE_JSPROPERTYMAP)
                 .addStatement(Stream.of(
-                        CodeBlock.of(".collect($T.toMap($T.identity(),", Collectors.class, Function.class),
-                        CodeBlock.of("key -> $T.ofNullable(object.$L.get(key))", Optional.class, methodName),
+                        CodeBlock.of("value.forEach((key, item) -> object.$L.set(key, Optional.ofNullable(item)", propertyName),
                         mapper,
                         CodeBlock.of(".orElse(null)))"))
                         .filter(code -> !code.isEmpty())
@@ -111,14 +99,14 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitOverlayType(OverlayType type) {
         ClassName overlay = type.getOverlayType();
         return CodeBlock.builder()
-                .addStatement("return $T.WRAPPER.apply(object.$L)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"), methodName)
+                .addStatement("object.$L = $T.UNWRAPPER.apply(value)", propertyName, ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
     }
 
     @Override
     public CodeBlock visitEnumType(EnumType type) {
         return CodeBlock.builder()
-                .addStatement("return $T.valueOf(object.$L)", type.getEnumType(), methodName)
+                .addStatement("object.$L = value.name()", propertyName)
                 .build();
     }
 
@@ -126,7 +114,7 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitInheritedType(InheritedType type) {
         ClassName superType = type.getSuperType();
         return CodeBlock.builder()
-                .addStatement("return $T.WRAPPER.apply(object.$L)", ClassName.get(packageName, superType.simpleName() + "_JSONOverlay"), methodName)
+                .addStatement("object.$L = $T.WRAPPER.apply(value)", propertyName, ClassName.get(packageName, superType.simpleName() + "_JSONOverlay"))
                 .build();
     }
 
@@ -134,7 +122,7 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitSubType(SubType type) {
         ClassName overlay = type.getSubType();
         return CodeBlock.builder()
-                .addStatement("return $T.WRAPPER.apply(object.$L)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"), methodName)
+                .addStatement("object.$L = $T.UNWRAPPER.apply(value)", propertyName, ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
     }
 
