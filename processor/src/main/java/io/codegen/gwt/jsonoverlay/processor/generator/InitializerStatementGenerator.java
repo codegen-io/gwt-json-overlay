@@ -1,6 +1,7 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
@@ -19,7 +20,11 @@ public class InitializerStatementGenerator implements JavaTypeVisitor<CodeBlock>
 
     @Override
     public CodeBlock visitPrimitiveType(PrimitiveType type) {
-        return CodeBlock.of("0");
+        if (TypeName.BOOLEAN.equals(type.getPrimitiveType())) {
+            return CodeBlock.of("false");
+        } else {
+            return CodeBlock.of("0");
+        }
     }
 
     @Override

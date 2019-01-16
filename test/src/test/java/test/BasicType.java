@@ -9,6 +9,8 @@ public interface BasicType {
 
     int getInt();
 
+    boolean isBoolean();
+
     Long getBoxedLong();
 
     StringType getStringType();

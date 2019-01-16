@@ -40,6 +40,11 @@ public final class BasicType_JSONOverlay implements BasicType {
   }
 
   @Override
+  public boolean isBoolean() {
+    return object.isBoolean;
+  }
+
+  @Override
   public Long getBoxedLong() {
     return object.getBoxedLong;
   }
@@ -96,6 +101,7 @@ public final class BasicType_JSONOverlay implements BasicType {
     JsObject object = new JsObject();
     object.getString = null;
     object.getInt = 0;
+    object.isBoolean = false;
     object.getBoxedLong = null;
     object.getStringType = null;
     object.getStringList = null;
@@ -135,6 +141,11 @@ public final class BasicType_JSONOverlay implements BasicType {
         name = "int"
     )
     int getInt;
+
+    @JsProperty(
+        name = "boolean"
+    )
+    boolean isBoolean;
 
     @JsProperty(
         name = "boxedLong"
