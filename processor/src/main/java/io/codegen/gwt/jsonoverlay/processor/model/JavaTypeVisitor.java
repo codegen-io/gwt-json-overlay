@@ -3,6 +3,7 @@ package io.codegen.gwt.jsonoverlay.processor.model;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -32,5 +33,7 @@ public interface JavaTypeVisitor<R> {
     R visitInheritedType(InheritedType type);
 
     R visitSubType(SubType type);
+
+    R visitJavaScriptObjectType(JavaScriptObjectType type);
 
 }

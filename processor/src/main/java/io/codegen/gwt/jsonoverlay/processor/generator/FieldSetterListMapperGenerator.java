@@ -7,6 +7,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -86,6 +87,11 @@ public class FieldSetterListMapperGenerator implements JavaTypeVisitor<CodeBlock
         return CodeBlock.builder()
                 .add(".toArray($T.JsObject[]::new)", ClassName.get(packageName, overlay.simpleName() + "_JSONOverlay"))
                 .build();
+    }
+
+    @Override
+    public CodeBlock visitJavaScriptObjectType(JavaScriptObjectType type) {
+        throw new UnsupportedOperationException();
     }
 
 }

@@ -29,6 +29,7 @@ import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.lang.model.util.Elements;
+import javax.lang.model.util.SimpleTypeVisitor8;
 import javax.tools.Diagnostic.Kind;
 
 import org.immutables.metainf.Metainf;
@@ -39,13 +40,16 @@ import com.squareup.javapoet.JavaFile;
 import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
+import io.codegen.gwt.jsonoverlay.processor.builder.ElementNameResolver;
 import io.codegen.gwt.jsonoverlay.processor.builder.ModelBuilder;
+import io.codegen.gwt.jsonoverlay.processor.builder.TypeResolver;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayFactoryGenerator;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayGenerator;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaCreateMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaFactory;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
+import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
 
 @SupportedSourceVersion(SourceVersion.RELEASE_8)
 @Metainf.Service(Processor.class)
@@ -152,6 +156,21 @@ public class JSONOverlayProcessor extends AbstractProcessor {
 
     private Set<String> getClasses(ExecutableElement method) {
         if (method.getParameters().size() == 1) {
+
+            TypeName listParameter = method.getReturnType().accept(new SimpleTypeVisitor8<TypeName, Void>() {
+                @Override
+                public TypeName visitDeclared(DeclaredType t, Void p) {
+                    if (ClassName.get(List.class).equals(t.asElement().accept(new ElementNameResolver(), null))) {
+                        return TypeName.get(t.getTypeArguments().get(0));
+                    }
+                    return null;
+                }
+            }, null);
+
+            if (listParameter != null) {
+                return Collections.singleton(listParameter.toString());
+            }
+
             TypeName returnType = TypeName.get(method.getReturnType());
             if (!ClassName.OBJECT.equals(returnType) && !ClassNames.GWT_JAVASCRIPTOBJECT.equals(returnType)) {
                 return Collections.singleton(returnType.toString());
@@ -219,12 +238,12 @@ public class JSONOverlayProcessor extends AbstractProcessor {
     }
 
     private JavaConvertMethod createConvertMethod(ExecutableElement method) {
-        TypeName returnType = TypeName.get(method.getReturnType());
-        TypeName parameter = TypeName.get(method.getParameters().iterator().next().asType());
+        JavaType returnType = method.getReturnType().accept(new TypeResolver(ignore -> {}), null);
+        JavaType parameter = method.getParameters().iterator().next().asType().accept(new TypeResolver(ignore -> {}), null);
         return JavaConvertMethod.builder()
                 .methodName(method.getSimpleName().toString())
-                .returnType((ClassName) returnType)
-                .argumentType((ClassName) parameter)
+                .returnType(returnType)
+                .argumentType(parameter)
                 .build();
     }
 

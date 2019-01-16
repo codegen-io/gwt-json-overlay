@@ -12,7 +12,6 @@ import com.squareup.javapoet.MethodSpec;
 import com.squareup.javapoet.TypeSpec;
 import com.squareup.javapoet.TypeVariableName;
 
-import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaCreateMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaFactory;
@@ -64,28 +63,9 @@ public class OverlayFactoryGenerator {
     }
 
     private MethodSpec generateConvertMethod(JavaConvertMethod method) {
-        ClassName returnType = method.getReturnType();
-        ClassName argumentType = method.getArgumentType();
-
-        CodeBlock code;
-        if (ClassNames.GWT_JAVASCRIPTOBJECT.equals(returnType)) {
-            code = CodeBlock.builder()
-                    .addStatement("return cast($T.unwrap(argument))", ClassName.get(packageName, argumentType.simpleName() + OVERLAY_SUFFIX))
-                    .build();
-        } else {
-            code = CodeBlock.builder()
-                    .addStatement("return $T.wrap(argument)", ClassName.get(packageName, returnType.simpleName() + OVERLAY_SUFFIX))
-                    .build();
-        }
-
-
-        return MethodSpec.methodBuilder(method.getMethodName())
-                .addAnnotation(Override.class)
-                .addModifiers(Modifier.PUBLIC)
-                .addParameter(argumentType, "argument")
-                .returns(returnType)
-                .addCode(code)
-                .build();
+        OverlayConvertMethodGenerator generator =
+                new OverlayConvertMethodGenerator(packageName, method.getMethodName(), method.getArgumentType());
+        return method.getReturnType().accept(generator);
     }
 
     private MethodSpec generateCreateMethod(JavaCreateMethod method) {

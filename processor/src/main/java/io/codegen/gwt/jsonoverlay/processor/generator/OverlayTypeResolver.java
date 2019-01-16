@@ -6,6 +6,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -72,6 +73,11 @@ public class OverlayTypeResolver implements JavaTypeVisitor<ClassName> {
     @Override
     public ClassName visitSubType(SubType type) {
         return ClassName.get(packageName, type.getSubType().simpleName() + OVERLAY_SUFFIX);
+    }
+
+    @Override
+    public ClassName visitJavaScriptObjectType(JavaScriptObjectType type) {
+        throw new UnsupportedOperationException();
     }
 
 }

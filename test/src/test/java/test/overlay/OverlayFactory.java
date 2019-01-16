@@ -1,5 +1,7 @@
 package test.overlay;
 
+import java.util.List;
+
 import com.google.gwt.core.client.JavaScriptObject;
 
 import io.codegen.gwt.jsonoverlay.annotations.JsonOverlayFactory;
@@ -43,6 +45,14 @@ public interface OverlayFactory {
      * @return a StringType overlay over the JavaScript object
      */
     StringType asStringType(JavaScriptObject object);
+
+    /**
+     * Create a list of {@link StringType} instances which overlays the given {@link JavaScriptObject}.
+     *
+     * @param object a JavaScript object which corresponds to the structure of a StringType array
+     * @return a list of StringType overlays over the JavaScript object
+     */
+    List<StringType> asStringTypeList(JavaScriptObject object);
 
     static OverlayFactory getInstance() {
         return INSTANCE;

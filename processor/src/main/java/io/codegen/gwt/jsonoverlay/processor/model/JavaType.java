@@ -12,6 +12,7 @@ public interface JavaType {
         OVERLAY,
         INHERITED,
         SUB,
+        JAVASCRIPT_OBJECT,
     }
 
     Kind getKind();

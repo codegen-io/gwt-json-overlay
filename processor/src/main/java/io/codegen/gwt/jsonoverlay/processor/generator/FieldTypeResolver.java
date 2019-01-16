@@ -10,6 +10,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -75,6 +76,11 @@ public class FieldTypeResolver implements JavaTypeVisitor<TypeName> {
     @Override
     public TypeName visitSubType(SubType type) {
         return ClassName.get(packageName, type.getSubType().simpleName() + "_JSONOverlay").nestedClass("JsObject");
+    }
+
+    @Override
+    public TypeName visitJavaScriptObjectType(JavaScriptObjectType type) {
+        return type.getJavaScriptObjectType();
     }
 
 }

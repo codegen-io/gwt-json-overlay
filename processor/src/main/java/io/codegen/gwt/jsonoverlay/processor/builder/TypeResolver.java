@@ -26,6 +26,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -81,6 +82,12 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
                 JavaType elementType = type.getTypeArguments().iterator().next().accept(new TypeResolver(consumer), null);
                 return OptionalType.builder()
                         .elementType(elementType)
+                        .build();
+            }
+
+            if (ClassNames.GWT_JAVASCRIPTOBJECT.equals(name)) {
+                return JavaScriptObjectType.builder()
+                        .javaScriptObjectType(name)
                         .build();
             }
 

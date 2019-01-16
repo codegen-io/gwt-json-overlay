@@ -18,12 +18,12 @@ public interface JavaConvertMethod {
     /**
      * @return the type of the returned instance
      */
-    ClassName getReturnType();
+    JavaType getReturnType();
 
     /**
      * @return the type of the method argument
      */
-    ClassName getArgumentType();
+    JavaType getArgumentType();
 
     public static Builder builder() {
         return new Builder();

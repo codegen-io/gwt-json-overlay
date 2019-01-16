@@ -1,6 +1,9 @@
 package test.overlay;
 
 import com.google.gwt.core.client.JavaScriptObject;
+import java.util.List;
+import java.util.stream.Collectors;
+import jsinterop.base.JsArrayLike;
 import test.BasicType;
 import test.StringType;
 
@@ -20,6 +23,14 @@ public final class OverlayFactory_JSONOverlayFactory implements OverlayFactory {
   @Override
   public StringType asStringType(JavaScriptObject argument) {
     return StringType_JSONOverlay.wrap(argument);
+  }
+
+  @Override
+  public List<StringType> asStringTypeList(JavaScriptObject argument) {
+    JsArrayLike<StringType_JSONOverlay.JsObject> array = cast(argument);
+    return array.asList().stream()
+        .map(StringType_JSONOverlay.WRAPPER)
+        .collect(Collectors.toList());
   }
 
   @Override

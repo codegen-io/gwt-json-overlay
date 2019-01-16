@@ -25,6 +25,8 @@ public class ClassNames {
 
     public static final ClassName JSINTEROP_BASE_JS = ClassName.get("jsinterop.base", "Js");
 
+    public static final ClassName JSINTEROP_BASE_JSARRAYLIKE = ClassName.get("jsinterop.base", "JsArrayLike");
+
     public static final ClassName JSINTEROP_BASE_JSPROPERTYMAP = ClassName.get("jsinterop.base", "JsPropertyMap");
 
     public static final ClassName GWT_SHARED_HELPER = ClassName.get("com.google.gwt.core.shared", "GWT");

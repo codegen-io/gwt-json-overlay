@@ -12,6 +12,7 @@ import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.ListType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.MapType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.OptionalType;
@@ -73,6 +74,11 @@ public class ReturnTypeResolver implements JavaTypeVisitor<TypeName> {
     @Override
     public TypeName visitSubType(SubType type) {
         return type.getSubType();
+    }
+
+    @Override
+    public TypeName visitJavaScriptObjectType(JavaScriptObjectType type) {
+        return type.getJavaScriptObjectType();
     }
 
 }
