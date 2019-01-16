@@ -45,7 +45,7 @@ public final class SetterType_JSONOverlay implements SetterType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong;
+    return object.getBoxedLong == Js.undefined() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
   }
 
   @Override

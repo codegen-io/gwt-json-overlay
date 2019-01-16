@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import test.BasicType;
 import test.SomeEnum;
 import test.StringType;
@@ -46,7 +47,7 @@ public final class BasicType_JSONOverlay implements BasicType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong;
+    return object.getBoxedLong == Js.undefined() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
   }
 
   @Override

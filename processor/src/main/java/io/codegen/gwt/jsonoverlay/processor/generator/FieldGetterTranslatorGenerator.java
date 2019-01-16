@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
 
+import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
@@ -44,8 +45,11 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
 
     @Override
     public CodeBlock visitBoxedType(BoxedType type) {
+        String primitive = type.getBoxedType().unbox().toString();
+        String typeName = Character.toTitleCase(primitive.charAt(0)) + primitive.substring(1);
+
         return CodeBlock.builder()
-                .addStatement("return object.$L", methodName)
+                .addStatement("return object.$L == $T.undefined() ? null : $T.valueOf($T.as$L(object.$L))", methodName, ClassNames.JSINTEROP_BASE_JS, type.getBoxedType(), ClassNames.JSINTEROP_BASE_JS, typeName, methodName)
                 .build();
     }
 
