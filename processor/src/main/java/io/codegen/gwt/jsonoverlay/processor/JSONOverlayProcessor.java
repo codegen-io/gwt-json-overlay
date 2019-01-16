@@ -43,6 +43,7 @@ import io.codegen.gwt.jsonoverlay.processor.builder.ModelBuilder;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayFactoryGenerator;
 import io.codegen.gwt.jsonoverlay.processor.generator.OverlayGenerator;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
+import io.codegen.gwt.jsonoverlay.processor.model.JavaCreateMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaFactory;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
 
@@ -207,6 +208,13 @@ public class JSONOverlayProcessor extends AbstractProcessor {
                         .filter(method -> method.getParameters().size() == 1)
                         .map(this::createConvertMethod)
                         .collect(Collectors.toList()))
+                .addAllCreateMethods(type.getEnclosedElements().stream()
+                        .filter(method -> ElementKind.METHOD.equals(method.getKind()))
+                        .map(TypeMapper::asExecutable)
+                        .filter(method -> !method.getModifiers().contains(Modifier.STATIC))
+                        .filter(method -> method.getParameters().size() == 0)
+                        .map(this::createCreateMethod)
+                        .collect(Collectors.toList()))
                 .build();
     }
 
@@ -217,6 +225,14 @@ public class JSONOverlayProcessor extends AbstractProcessor {
                 .methodName(method.getSimpleName().toString())
                 .returnType((ClassName) returnType)
                 .argumentType((ClassName) parameter)
+                .build();
+    }
+
+    private JavaCreateMethod createCreateMethod(ExecutableElement method) {
+        TypeName returnType = TypeName.get(method.getReturnType());
+        return JavaCreateMethod.builder()
+                .methodName(method.getSimpleName().toString())
+                .returnType((ClassName) returnType)
                 .build();
     }
 

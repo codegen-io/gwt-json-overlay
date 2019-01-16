@@ -52,6 +52,12 @@ public final class MapType_JSONOverlay implements MapType {
     return factory.createSerializer(MapType_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static MapType create() {
+    JsObject object = new JsObject();
+    object.getStringMap = null;
+    return wrap(object);
+  }
+
   public static MapType wrap(Object object) {
     if (object instanceof JsObject) {
       return new MapType_JSONOverlay((JsObject) object);

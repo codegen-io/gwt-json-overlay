@@ -14,6 +14,7 @@ import com.squareup.javapoet.TypeVariableName;
 
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaConvertMethod;
+import io.codegen.gwt.jsonoverlay.processor.model.JavaCreateMethod;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaFactory;
 
 public class OverlayFactoryGenerator {
@@ -41,7 +42,11 @@ public class OverlayFactoryGenerator {
                 .build());
 
         typeSpec.addMethods(javaFactory.getConvertMethods().stream()
-                .map(this::generateMethod)
+                .map(this::generateConvertMethod)
+                .collect(Collectors.toList()));
+
+        typeSpec.addMethods(javaFactory.getCreateMethods().stream()
+                .map(this::generateCreateMethod)
                 .collect(Collectors.toList()));
 
         typeSpec.addMethod(MethodSpec.methodBuilder("cast")
@@ -58,7 +63,7 @@ public class OverlayFactoryGenerator {
         return typeSpec.build();
     }
 
-    private MethodSpec generateMethod(JavaConvertMethod method) {
+    private MethodSpec generateConvertMethod(JavaConvertMethod method) {
         ClassName returnType = method.getReturnType();
         ClassName argumentType = method.getArgumentType();
 
@@ -78,6 +83,21 @@ public class OverlayFactoryGenerator {
                 .addAnnotation(Override.class)
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(argumentType, "argument")
+                .returns(returnType)
+                .addCode(code)
+                .build();
+    }
+
+    private MethodSpec generateCreateMethod(JavaCreateMethod method) {
+        ClassName returnType = method.getReturnType();
+
+        CodeBlock code = CodeBlock.builder()
+                .addStatement("return $T.create()", ClassName.get(packageName, returnType.simpleName() + OVERLAY_SUFFIX))
+                .build();
+
+        return MethodSpec.methodBuilder(method.getMethodName())
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
                 .returns(returnType)
                 .addCode(code)
                 .build();

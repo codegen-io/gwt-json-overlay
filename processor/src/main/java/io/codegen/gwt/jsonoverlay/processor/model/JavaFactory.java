@@ -13,6 +13,8 @@ public interface JavaFactory {
 
     List<JavaConvertMethod> getConvertMethods();
 
+    List<JavaCreateMethod> getCreateMethods();
+
     public static Builder builder() {
         return new Builder();
     }

@@ -123,6 +123,18 @@ public class OverlayGenerator {
                         .build())
                 .build());
 
+        typeSpec.addMethod(MethodSpec.methodBuilder("create")
+                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
+                .returns(superType)
+                .addCode(CodeBlock.builder()
+                        .addStatement("$T object = new $T()", overlayName.nestedClass("JsObject"), overlayName.nestedClass("JsObject"))
+                        .add(CodeBlock.join(javaInterface.getGetters().stream()
+                                .map(this::generateInitializer)
+                                .collect(Collectors.toList()), ""))
+                        .addStatement("return wrap(object)")
+                        .build())
+                .build());
+
         CodeBlock wrapper = javaInterface.getType().accept(new WrapStatementGenerator(packageName));
 
         typeSpec.addMethod(MethodSpec.methodBuilder("wrap")
@@ -186,6 +198,14 @@ public class OverlayGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(returnType, "value")
                 .addCode(translator)
+                .build();
+    }
+
+    private CodeBlock generateInitializer(JavaGetter getter) {
+        return CodeBlock.builder()
+                .add("object.$L = ", getter.getMethodName())
+                .add(getter.getPropertyType().accept(new InitializerStatementGenerator()))
+                .add(";\n")
                 .build();
     }
 

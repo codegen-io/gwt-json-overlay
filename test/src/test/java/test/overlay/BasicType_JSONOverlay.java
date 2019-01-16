@@ -92,6 +92,20 @@ public final class BasicType_JSONOverlay implements BasicType {
     return factory.createSerializer(BasicType_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static BasicType create() {
+    JsObject object = new JsObject();
+    object.getString = null;
+    object.getInt = 0;
+    object.getBoxedLong = null;
+    object.getStringType = null;
+    object.getStringList = null;
+    object.getStringTypeList = null;
+    object.getOptionalString = null;
+    object.getOptionalStringType = null;
+    object.getEnumType = null;
+    return wrap(object);
+  }
+
   public static BasicType wrap(Object object) {
     if (object instanceof JsObject) {
       return new BasicType_JSONOverlay((JsObject) object);

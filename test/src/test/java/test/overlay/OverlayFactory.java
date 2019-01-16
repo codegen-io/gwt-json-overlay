@@ -14,6 +14,13 @@ public interface OverlayFactory {
     static final OverlayFactory INSTANCE = OverlayFactory_JSONOverlayFactory.INSTANCE;
 
     /**
+     * Create a new instance of a {@link BasicType}, which acts as an overlay for a new {@link JavaScriptObject}.
+     *
+     * @return a BasicType instance
+     */
+    BasicType createBasicType();
+
+    /**
      * Create an instance of a {@link BasicType} which overlays the given {@link JavaScriptObject}.
      *
      * @param object a JavaScript object which corresponds to the structure of BasicType

@@ -169,6 +169,21 @@ public final class SetterType_JSONOverlay implements SetterType {
     return factory.createSerializer(SetterType_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static SetterType create() {
+    JsObject object = new JsObject();
+    object.getString = null;
+    object.getInt = 0;
+    object.getBoxedLong = null;
+    object.getStringType = null;
+    object.getStringList = null;
+    object.getStringTypeList = null;
+    object.getOptionalString = null;
+    object.getOptionalStringType = null;
+    object.getEnumType = null;
+    object.getStringMap = null;
+    return wrap(object);
+  }
+
   public static SetterType wrap(Object object) {
     if (object instanceof JsObject) {
       return new SetterType_JSONOverlay((JsObject) object);

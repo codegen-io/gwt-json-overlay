@@ -35,6 +35,12 @@ public final class StringType_JSONOverlay implements StringType {
     return factory.createSerializer(StringType_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static StringType create() {
+    JsObject object = new JsObject();
+    object.getString = null;
+    return wrap(object);
+  }
+
   public static StringType wrap(Object object) {
     if (object instanceof JsObject) {
       return new StringType_JSONOverlay((JsObject) object);

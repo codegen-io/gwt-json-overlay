@@ -35,6 +35,12 @@ public final class InheritanceSuper_JSONOverlay implements InheritanceSuper {
     return factory.createSerializer(InheritanceSuper_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static InheritanceSuper create() {
+    JsObject object = new JsObject();
+    object.getKind = null;
+    return wrap(object);
+  }
+
   public static InheritanceSuper wrap(Object object) {
     if (object instanceof JsObject) {
       switch (((JsObject) object).getKind) {

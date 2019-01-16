@@ -57,6 +57,14 @@ public final class InheritanceContainer_JSONOverlay implements InheritanceContai
     return factory.createSerializer(InheritanceContainer_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static InheritanceContainer create() {
+    JsObject object = new JsObject();
+    object.getSomeKindOfInstances = null;
+    object.getPossibleKindOfInstances = null;
+    object.getAllKindsOfInstances = null;
+    return wrap(object);
+  }
+
   public static InheritanceContainer wrap(Object object) {
     if (object instanceof JsObject) {
       return new InheritanceContainer_JSONOverlay((JsObject) object);
@@ -92,5 +100,4 @@ public final class InheritanceContainer_JSONOverlay implements InheritanceContai
     )
     InheritanceSuper_JSONOverlay.JsObject[] getAllKindsOfInstances;
   }
-
 }

@@ -22,9 +22,13 @@ public final class OverlayFactory_JSONOverlayFactory implements OverlayFactory {
     return StringType_JSONOverlay.wrap(argument);
   }
 
+  @Override
+  public BasicType createBasicType() {
+    return BasicType_JSONOverlay.create();
+  }
+
   @SuppressWarnings("unchecked")
   static final <T> T cast(Object object) {
     return (T) object;
   }
-
 }

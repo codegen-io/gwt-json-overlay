@@ -40,6 +40,13 @@ public final class InheritanceSubB_JSONOverlay implements InheritanceSubB {
     return factory.createSerializer(InheritanceSubB_JSONOverlay.UNWRAPPER).toJSON(object);
   }
 
+  public static InheritanceSubB create() {
+    JsObject object = new JsObject();
+    object.getB = null;
+    object.getKind = null;
+    return wrap(object);
+  }
+
   public static InheritanceSubB wrap(Object object) {
     if (object instanceof JsObject) {
       return new InheritanceSubB_JSONOverlay((JsObject) object);
