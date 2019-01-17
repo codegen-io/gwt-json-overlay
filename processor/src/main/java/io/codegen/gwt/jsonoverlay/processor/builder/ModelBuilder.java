@@ -11,6 +11,7 @@ import java.util.stream.Stream;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.ElementKind;
 import javax.lang.model.element.ExecutableElement;
+import javax.lang.model.element.Modifier;
 import javax.lang.model.element.Name;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.type.TypeKind;
@@ -49,6 +50,7 @@ public class ModelBuilder {
                 .filter(type -> ElementKind.METHOD.equals(type.getKind()))
                 .map(TypeMapper::asExecutable)
                 .filter(method -> !method.isDefault())
+                .filter(method -> !method.getModifiers().contains(Modifier.STATIC))
                 .filter(method -> !TypeKind.VOID.equals(method.getReturnType().getKind()))
                 .collect(Collectors.toList());
 

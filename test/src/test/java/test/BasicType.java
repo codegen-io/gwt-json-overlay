@@ -25,4 +25,17 @@ public interface BasicType {
 
     SomeEnum getEnumType();
 
+    // Static methods should be ignored
+    static String getStaticString() {
+        return "static string";
+    }
+
+    // Default methods should be ignored
+    default String getDefaultString() {
+        return "default string";
+    }
+
+    // Nested classes should be ignored
+    class NestedClass {}
+
 }
