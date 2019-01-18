@@ -1,5 +1,7 @@
 package test.boxed;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.function.Function;
 import jsinterop.annotations.JsPackage;
@@ -25,42 +27,42 @@ public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
 
   @Override
   public Boolean getBoolean() {
-    return object.getBoolean == Js.undefined() ? null : Boolean.valueOf(Js.asBoolean(object.getBoolean));
+    return object.getBoolean == undefinedObject() ? null : Boolean.valueOf(Js.asBoolean(object.getBoolean));
   }
 
   @Override
   public Byte getByte() {
-    return object.getByte == Js.undefined() ? null : Byte.valueOf(Js.asByte(object.getByte));
+    return object.getByte == undefinedObject() ? null : Byte.valueOf(Js.asByte(object.getByte));
   }
 
   @Override
   public Short getShort() {
-    return object.getShort == Js.undefined() ? null : Short.valueOf(Js.asShort(object.getShort));
+    return object.getShort == undefinedObject() ? null : Short.valueOf(Js.asShort(object.getShort));
   }
 
   @Override
   public Integer getInt() {
-    return object.getInt == Js.undefined() ? null : Integer.valueOf(Js.asInt(object.getInt));
+    return object.getInt == undefinedObject() ? null : Integer.valueOf(Js.asInt(object.getInt));
   }
 
   @Override
   public Long getLong() {
-    return object.getLong == Js.undefined() ? null : Long.valueOf(Js.asLong(object.getLong));
+    return object.getLong == undefinedObject() ? null : Long.valueOf(Js.asLong(object.getLong));
   }
 
   @Override
   public Character getChar() {
-    return object.getChar == Js.undefined() ? null : Character.valueOf(Js.asChar(object.getChar));
+    return object.getChar == undefinedObject() ? null : Character.valueOf(Js.asChar(object.getChar));
   }
 
   @Override
   public Float getFloat() {
-    return object.getFloat == Js.undefined() ? null : Float.valueOf(Js.asFloat(object.getFloat));
+    return object.getFloat == undefinedObject() ? null : Float.valueOf(Js.asFloat(object.getFloat));
   }
 
   @Override
   public Double getDouble() {
-    return object.getDouble == Js.undefined() ? null : Double.valueOf(Js.asDouble(object.getDouble));
+    return object.getDouble == undefinedObject() ? null : Double.valueOf(Js.asDouble(object.getDouble));
   }
 
   public static BoxedGettersType parse(String json, JsonFactory factory) {

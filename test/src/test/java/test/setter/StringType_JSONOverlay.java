@@ -1,5 +1,7 @@
 package test.setter;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.function.Function;
 import jsinterop.annotations.JsPackage;

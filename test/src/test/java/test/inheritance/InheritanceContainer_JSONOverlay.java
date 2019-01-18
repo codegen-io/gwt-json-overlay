@@ -1,5 +1,7 @@
 package test.inheritance;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.Collections;
 import java.util.List;

@@ -1,5 +1,7 @@
 package test.map;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;

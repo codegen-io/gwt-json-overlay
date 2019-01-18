@@ -1,5 +1,7 @@
 package test.overlay;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.Collections;
 import java.util.List;
@@ -47,7 +49,7 @@ public final class BasicType_JSONOverlay implements BasicType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong == Js.undefined() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
+    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
   }
 
   @Override

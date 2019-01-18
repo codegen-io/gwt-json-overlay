@@ -4,12 +4,16 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
@@ -49,7 +53,7 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
         String typeName = Character.toTitleCase(primitive.charAt(0)) + primitive.substring(1);
 
         return CodeBlock.builder()
-                .addStatement("return object.$L == $T.undefined() ? null : $T.valueOf($T.as$L(object.$L))", methodName, ClassNames.JSINTEROP_BASE_JS, type.getBoxedType(), ClassNames.JSINTEROP_BASE_JS, typeName, methodName)
+                .addStatement("return object.$L == $T.undefinedObject() ? null : $T.valueOf($T.as$L(object.$L))", methodName, ClassNames.JSON_HELPER, type.getBoxedType(), ClassNames.JSINTEROP_BASE_JS, typeName, methodName)
                 .build();
     }
 
@@ -62,6 +66,19 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
 
     @Override
     public CodeBlock visitOptionalType(OptionalType type) {
+        TypeName returnType = type.getElementType().accept(new ReturnTypeResolver());
+        if (TypeName.INT.equals(returnType)) {
+            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalInt.class, OptionalInt.class, methodName);
+        }
+
+        if (TypeName.LONG.equals(returnType)) {
+            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalLong.class, OptionalLong.class, methodName);
+        }
+
+        if (TypeName.DOUBLE.equals(returnType)) {
+            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalDouble.class, OptionalDouble.class, methodName);
+        }
+
         CodeBlock mapper = type.getElementType().accept(new FieldGetterMapperGenerator(packageName));
 
         return CodeBlock.builder()

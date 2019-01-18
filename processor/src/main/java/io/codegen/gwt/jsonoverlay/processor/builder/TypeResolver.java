@@ -3,6 +3,9 @@ package io.codegen.gwt.jsonoverlay.processor.builder;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -78,6 +81,12 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
                         .build();
             }
 
+            if (ClassNames.GWT_JAVASCRIPTOBJECT.equals(name)) {
+                return JavaScriptObjectType.builder()
+                        .javaScriptObjectType(name)
+                        .build();
+            }
+
             if (ClassName.get(Optional.class).equals(name)) {
                 JavaType elementType = type.getTypeArguments().iterator().next().accept(new TypeResolver(consumer), null);
                 return OptionalType.builder()
@@ -85,9 +94,27 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
                         .build();
             }
 
-            if (ClassNames.GWT_JAVASCRIPTOBJECT.equals(name)) {
-                return JavaScriptObjectType.builder()
-                        .javaScriptObjectType(name)
+            if (ClassName.get(OptionalInt.class).equals(name)) {
+                return OptionalType.builder()
+                        .elementType(io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType.builder()
+                                .primitiveType(TypeName.INT)
+                                .build())
+                        .build();
+            }
+
+            if (ClassName.get(OptionalLong.class).equals(name)) {
+                return OptionalType.builder()
+                        .elementType(io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType.builder()
+                                .primitiveType(TypeName.LONG)
+                                .build())
+                        .build();
+            }
+
+            if (ClassName.get(OptionalDouble.class).equals(name)) {
+                return OptionalType.builder()
+                        .elementType(io.codegen.gwt.jsonoverlay.processor.model.types.PrimitiveType.builder()
+                                .primitiveType(TypeName.DOUBLE)
+                                .build())
                         .build();
             }
 

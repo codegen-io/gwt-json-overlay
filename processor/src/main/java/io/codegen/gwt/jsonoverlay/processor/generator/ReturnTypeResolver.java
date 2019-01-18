@@ -3,6 +3,9 @@ package io.codegen.gwt.jsonoverlay.processor.generator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.OptionalDouble;
+import java.util.OptionalInt;
+import java.util.OptionalLong;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -41,6 +44,15 @@ public class ReturnTypeResolver implements JavaTypeVisitor<TypeName> {
     @Override
     public TypeName visitOptionalType(OptionalType type) {
         TypeName element = type.getElementType().accept(new ReturnTypeResolver());
+        if (TypeName.INT.equals(element)) {
+            return ClassName.get(OptionalInt.class);
+        }
+        if (TypeName.LONG.equals(element)) {
+            return ClassName.get(OptionalLong.class);
+        }
+        if (TypeName.DOUBLE.equals(element)) {
+            return ClassName.get(OptionalDouble.class);
+        }
         return ParameterizedTypeName.get(ClassName.get(Optional.class), element);
     }
 

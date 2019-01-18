@@ -208,6 +208,7 @@ public class JSONOverlayProcessor extends AbstractProcessor {
 
             JavaFile javaFile = JavaFile.builder(packageName, overlay)
                     .skipJavaLangImports(true)
+                    .addStaticImport(ClassNames.JSON_HELPER, "*")
                     .build();
             try {
                 javaFile.writeTo(this.processingEnv.getFiler());

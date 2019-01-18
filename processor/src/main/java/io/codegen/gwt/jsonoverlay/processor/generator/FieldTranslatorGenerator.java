@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
@@ -56,6 +57,16 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
 
     @Override
     public CodeBlock visitOptionalType(OptionalType type) {
+        TypeName returnType = type.getElementType().accept(new ReturnTypeResolver());
+        if (TypeName.INT.equals(returnType)
+                || TypeName.LONG.equals(returnType)
+                || TypeName.DOUBLE.equals(returnType)) {
+            return CodeBlock.builder()
+                    .add("object.$L = wrapper.$L()\n", propertyName, methodName)
+                    .add("\t.orElse(undefinedInt());\n")
+                    .build();
+        }
+
         CodeBlock mapper = type.getElementType().accept(new FieldSetterMapperGenerator(packageName));
 
         return CodeBlock.builder()

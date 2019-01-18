@@ -1,5 +1,7 @@
 package test.setter;
 
+import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
+
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -45,7 +47,7 @@ public final class SetterType_JSONOverlay implements SetterType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong == Js.undefined() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
+    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
   }
 
   @Override

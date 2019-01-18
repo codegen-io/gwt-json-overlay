@@ -39,6 +39,13 @@ public class InitializerStatementGenerator implements JavaTypeVisitor<CodeBlock>
 
     @Override
     public CodeBlock visitOptionalType(OptionalType type) {
+        TypeName returnType = type.getElementType().accept(new ReturnTypeResolver());
+        if (TypeName.INT.equals(returnType)
+                || TypeName.LONG.equals(returnType)
+                || TypeName.DOUBLE.equals(returnType)) {
+            return CodeBlock.of("undefinedInt()");
+        }
+
         return CodeBlock.of("null");
     }
 

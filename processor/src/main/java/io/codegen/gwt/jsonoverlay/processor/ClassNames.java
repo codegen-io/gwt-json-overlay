@@ -45,6 +45,8 @@ public class ClassNames {
 
     public static final ClassName JSON_SERIALIZER = ClassName.get(JSONOVERLAY_RUNTIME_PACKAGE, "JsonSerializer");
 
+    public static final ClassName JSON_HELPER = ClassName.get(JSONOVERLAY_RUNTIME_PACKAGE + ".gwt", "JsHelper");
+
     public static final ClassName JACKSON_JSONSUBTYPES = ClassName.get(JACKSON_PACKAGE, "JsonSubTypes");
 
     public static final ClassName JACKSON_JSONSUBTYPES_TYPE = JACKSON_JSONSUBTYPES.nestedClass("Type");
