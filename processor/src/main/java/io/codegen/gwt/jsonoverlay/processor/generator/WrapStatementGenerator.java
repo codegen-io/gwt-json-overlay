@@ -69,12 +69,6 @@ public class WrapStatementGenerator implements JavaTypeVisitor<CodeBlock> {
     public CodeBlock visitInheritedType(InheritedType type) {
         ClassName overlay = type.accept(new OverlayTypeResolver(packageName));
 
-        /*
-         * switch (((JsObject) object).getKind) { case "a": return
-         * InheritanceSubA_JSONOverlay.WRAPPER.apply((InheritanceSubA_JSONOverlay.JsObject) object); case "b": return
-         * InheritanceSubB_JSONOverlay.WRAPPER.apply((InheritanceSubB_JSONOverlay.JsObject) object); default: throw new
-         * IllegalArgumentException("Unknown discriminator '" + ((JsObject) object).getKind + "'"); }
-         */
         CodeBlock caseStatements = type.getInheritedTypes().entrySet().stream()
                 .map(entry -> generateCaseStatement(entry.getKey(), entry.getValue().accept(new OverlayTypeResolver(packageName))))
                 .collect(CodeBlock.joining(""));
@@ -84,7 +78,7 @@ public class WrapStatementGenerator implements JavaTypeVisitor<CodeBlock> {
                 .add(caseStatements)
                 .add("default:\n")
                 .indent()
-                .addStatement("throw new $T(\"Unknown discriminator '\" + (($T) object).$L + \"'\")",
+                    .addStatement("throw new $T(\"Unknown discriminator '\" + (($T) object).$L + \"'\")",
                         IllegalArgumentException.class, overlay.nestedClass("JsObject"), type.getDiscriminatorMethodName())
                 .unindent()
                 .endControlFlow()
@@ -95,7 +89,7 @@ public class WrapStatementGenerator implements JavaTypeVisitor<CodeBlock> {
         return CodeBlock.builder()
                 .add("case $S:\n", name)
                 .indent()
-                .addStatement("return new $T(($T) object)", overlay, overlay.nestedClass("JsObject"))
+                    .addStatement("return new $T(($T) object)", overlay, overlay.nestedClass("JsObject"))
                 .unindent()
                 .build();
     }

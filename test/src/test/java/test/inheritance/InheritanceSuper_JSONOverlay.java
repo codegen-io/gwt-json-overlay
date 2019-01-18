@@ -5,6 +5,8 @@ import java.util.function.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import test.InheritanceSubA;
+import test.InheritanceSubB;
 import test.InheritanceSuper;
 
 public final class InheritanceSuper_JSONOverlay implements InheritanceSuper {
@@ -55,11 +57,19 @@ public final class InheritanceSuper_JSONOverlay implements InheritanceSuper {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceSuper_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof InheritanceSuper_JSONOverlay) {
-      return ((InheritanceSuper_JSONOverlay) object).object;
+  public static JsObject unwrap(InheritanceSuper wrapper) {
+    if (wrapper instanceof InheritanceSuper_JSONOverlay) {
+      return ((InheritanceSuper_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceSuper_JSONOverlay");
+    if (wrapper instanceof InheritanceSubA) {
+      return InheritanceSubA_JSONOverlay.UNWRAPPER.apply((InheritanceSubA)wrapper);
+    }
+    if (wrapper instanceof InheritanceSubB) {
+      return InheritanceSubB_JSONOverlay.UNWRAPPER.apply((InheritanceSubB)wrapper);
+    }
+    JsObject object = new JsObject();
+    object.getKind = wrapper.getKind();
+    return object;
   }
 
   @JsType(
@@ -73,5 +83,4 @@ public final class InheritanceSuper_JSONOverlay implements InheritanceSuper {
     )
     String getKind;
   }
-
 }

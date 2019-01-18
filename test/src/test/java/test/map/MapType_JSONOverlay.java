@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
+import jsinterop.base.Js;
 import jsinterop.base.JsPropertyMap;
 import test.MapType;
 import test.StringType;
@@ -65,11 +66,16 @@ public final class MapType_JSONOverlay implements MapType {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.map.MapType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof MapType_JSONOverlay) {
-      return ((MapType_JSONOverlay) object).object;
+  public static JsObject unwrap(MapType wrapper) {
+    if (wrapper instanceof MapType_JSONOverlay) {
+      return ((MapType_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.map.MapType_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getStringMap = Js.cast(JsPropertyMap.of());
+    wrapper.getStringMap().forEach((key, item) -> object.getStringMap.set(key, Optional.ofNullable(item)
+        .map(StringType_JSONOverlay.UNWRAPPER)
+        .orElse(null)));
+    return object;
   }
 
   @JsType(

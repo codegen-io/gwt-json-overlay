@@ -120,11 +120,28 @@ public final class BasicType_JSONOverlay implements BasicType {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.overlay.BasicType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof BasicType_JSONOverlay) {
-      return ((BasicType_JSONOverlay) object).object;
+  public static JsObject unwrap(BasicType wrapper) {
+    if (wrapper instanceof BasicType_JSONOverlay) {
+      return ((BasicType_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.overlay.BasicType_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getString = wrapper.getString();
+    object.getInt = wrapper.getInt();
+    object.isBoolean = wrapper.isBoolean();
+    object.getBoxedLong = wrapper.getBoxedLong();
+    object.getStringType = StringType_JSONOverlay.UNWRAPPER.apply(wrapper.getStringType());
+    object.getStringList = wrapper.getStringList().stream()
+        .toArray(String[]::new);
+    object.getStringTypeList = wrapper.getStringTypeList().stream()
+        .map(StringType_JSONOverlay.UNWRAPPER)
+        .toArray(StringType_JSONOverlay.JsObject[]::new);
+    object.getOptionalString = wrapper.getOptionalString()
+        .orElse(null);
+    object.getOptionalStringType = wrapper.getOptionalStringType()
+        .map(StringType_JSONOverlay.UNWRAPPER)
+        .orElse(null);
+    object.getEnumType = wrapper.getEnumType().name();
+    return object;
   }
 
   @JsType(

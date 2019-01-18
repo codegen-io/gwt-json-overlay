@@ -48,11 +48,13 @@ public final class StringType_JSONOverlay implements StringType {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.map.StringType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof StringType_JSONOverlay) {
-      return ((StringType_JSONOverlay) object).object;
+  public static JsObject unwrap(StringType wrapper) {
+    if (wrapper instanceof StringType_JSONOverlay) {
+      return ((StringType_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.map.StringType_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getString = wrapper.getString();
+    return object;
   }
 
   @JsType(

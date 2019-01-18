@@ -65,20 +65,6 @@ public class OverlayGenerator {
 
         typeSpec.addType(jsObject);
 
-        /*
-        typeSpec.addType(TypeSpec.interfaceBuilder(overlayName.nestedClass("WrapperFunction"))
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addAnnotation(ClassNames.JSINTEROP_JSFUNCTION)
-                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Function.class), overlayName.nestedClass("JsObject"), superType))
-                .build());
-
-        typeSpec.addType(TypeSpec.interfaceBuilder(overlayName.nestedClass("UnwrapperFunction"))
-                .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addAnnotation(ClassNames.JSINTEROP_JSFUNCTION)
-                .addSuperinterface(ParameterizedTypeName.get(ClassName.get(Function.class), superType, overlayName.nestedClass("JsObject")))
-                .build());
-       */
-
         typeSpec.addField(overlayName.nestedClass("JsObject"), "object", Modifier.PRIVATE, Modifier.FINAL);
         typeSpec.addMethod(MethodSpec.constructorBuilder()
                 .addModifiers(Modifier.PROTECTED)
@@ -150,16 +136,22 @@ public class OverlayGenerator {
                         .build())
                 .build());
 
+        CodeBlock unwrapper = javaInterface.getType().accept(new UnwrapStatementGenerator(packageName));
+
         typeSpec.addMethod(MethodSpec.methodBuilder("unwrap")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
-                .addParameter(Object.class, "object")
+                .addParameter(superType, "wrapper")
                 .returns(overlayName.nestedClass("JsObject"))
                 .addCode(CodeBlock.builder()
-                        .beginControlFlow("if (object instanceof $T)", overlayName)
-                            .addStatement("return (($T) object).object", overlayName)
+                        .beginControlFlow("if (wrapper instanceof $T)", overlayName)
+                            .addStatement("return (($T) wrapper).object", overlayName)
                         .endControlFlow()
-                        .addStatement("throw new $T(\"Object '\" + object + \"' isn't of type $L\")",
-                                IllegalArgumentException.class, overlayName.toString())
+                        .add(unwrapper)
+                        .addStatement("$T object = new $T()", overlayName.nestedClass("JsObject"), overlayName.nestedClass("JsObject"))
+                        .add(CodeBlock.join(javaInterface.getGetters().stream()
+                                .map(getter -> getter.getPropertyType().accept(new FieldTranslatorGenerator(packageName, getter.getMethodName(), getter.getMethodName())))
+                                .collect(Collectors.toList()), ""))
+                        .addStatement("return object")
                         .build())
                 .build());
 

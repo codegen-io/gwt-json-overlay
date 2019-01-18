@@ -72,11 +72,19 @@ public final class InheritanceContainer_JSONOverlay implements InheritanceContai
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceContainer_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof InheritanceContainer_JSONOverlay) {
-      return ((InheritanceContainer_JSONOverlay) object).object;
+  public static JsObject unwrap(InheritanceContainer wrapper) {
+    if (wrapper instanceof InheritanceContainer_JSONOverlay) {
+      return ((InheritanceContainer_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceContainer_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getSomeKindOfInstances = InheritanceSuper_JSONOverlay.UNWRAPPER.apply(wrapper.getSomeKindOfInstances());
+    object.getPossibleKindOfInstances = wrapper.getPossibleKindOfInstances()
+        .map(InheritanceSuper_JSONOverlay.UNWRAPPER)
+        .orElse(null);
+    object.getAllKindsOfInstances = wrapper.getAllKindsOfInstances().stream()
+        .map(InheritanceSuper_JSONOverlay.UNWRAPPER)
+        .toArray(InheritanceSuper_JSONOverlay.JsObject[]::new);
+    return object;
   }
 
   @JsType(

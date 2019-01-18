@@ -91,11 +91,20 @@ public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.boxed.BoxedGettersType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof BoxedGettersType_JSONOverlay) {
-      return ((BoxedGettersType_JSONOverlay) object).object;
+  public static JsObject unwrap(BoxedGettersType wrapper) {
+    if (wrapper instanceof BoxedGettersType_JSONOverlay) {
+      return ((BoxedGettersType_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.boxed.BoxedGettersType_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getBoolean = wrapper.getBoolean();
+    object.getByte = wrapper.getByte();
+    object.getShort = wrapper.getShort();
+    object.getInt = wrapper.getInt();
+    object.getLong = wrapper.getLong();
+    object.getChar = wrapper.getChar();
+    object.getFloat = wrapper.getFloat();
+    object.getDouble = wrapper.getDouble();
+    return object;
   }
 
   @JsType(

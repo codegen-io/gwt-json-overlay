@@ -2,8 +2,6 @@ package io.codegen.gwt.jsonoverlay.processor.model;
 
 import org.immutables.value.Value;
 
-import com.squareup.javapoet.ClassName;
-
 /**
  * Representation of a Java convert method, which is able to convert a JavaScript object to an overlay or vice versa.
  */

@@ -90,11 +90,21 @@ public final class PrimitiveGettersType_JSONOverlay implements PrimitiveGettersT
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.primitives.PrimitiveGettersType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof PrimitiveGettersType_JSONOverlay) {
-      return ((PrimitiveGettersType_JSONOverlay) object).object;
+  public static JsObject unwrap(PrimitiveGettersType wrapper) {
+    if (wrapper instanceof PrimitiveGettersType_JSONOverlay) {
+      return ((PrimitiveGettersType_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.primitives.PrimitiveGettersType_JSONOverlay");
+
+    JsObject object = new JsObject();
+    object.getBoolean = wrapper.getBoolean();
+    object.getByte = wrapper.getByte();
+    object.getShort = wrapper.getShort();
+    object.getInt = wrapper.getInt();
+    object.getLong = wrapper.getLong();
+    object.getChar = wrapper.getChar();
+    object.getFloat = wrapper.getFloat();
+    object.getDouble = wrapper.getDouble();
+    return object;
   }
 
   @JsType(

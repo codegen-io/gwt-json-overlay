@@ -54,11 +54,14 @@ public final class InheritanceSubA_JSONOverlay implements InheritanceSubA {
     throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceSubA_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(Object object) {
-    if (object instanceof InheritanceSubA_JSONOverlay) {
-      return ((InheritanceSubA_JSONOverlay) object).object;
+  public static JsObject unwrap(InheritanceSubA wrapper) {
+    if (wrapper instanceof InheritanceSubA_JSONOverlay) {
+      return ((InheritanceSubA_JSONOverlay) wrapper).object;
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.inheritance.InheritanceSubA_JSONOverlay");
+    JsObject object = new JsObject();
+    object.getA = wrapper.getA();
+    object.getKind = wrapper.getKind();
+    return object;
   }
 
   @JsType(
