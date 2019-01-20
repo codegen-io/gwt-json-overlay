@@ -4,7 +4,7 @@
 
   <groupId>io.codegen.gwt-json-overlay</groupId>
   <artifactId>gwt-json-overlay</artifactId>
-  <version>0.0.8-SNAPSHOT</version>
+  <version>0.0.8</version>
   <packaging>pom</packaging>
 
   <name>${project.artifactId}</name>
@@ -36,7 +36,7 @@
     <connection>scm:git:git://github.com/codegen-io/gwt-json-overlay.git</connection>
     <developerConnection>scm:git:ssh://git@github.com/codegen-io/gwt-json-overlay.git</developerConnection>
     <url>https://github.com/codegen-io/gwt-json-overlay/tree/master</url>
-    <tag>HEAD</tag>
+    <tag>v0.0.8</tag>
   </scm>
 
   <properties>
