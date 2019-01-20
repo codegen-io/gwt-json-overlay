@@ -12,7 +12,6 @@ import java.util.stream.Stream;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
-import jsinterop.base.Js;
 import test.BasicType;
 import test.SomeEnum;
 import test.StringType;
@@ -49,7 +48,7 @@ public final class BasicType_JSONOverlay implements BasicType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
+    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(object.getBoxedLong.longValue());
   }
 
   @Override
@@ -130,7 +129,7 @@ public final class BasicType_JSONOverlay implements BasicType {
     object.getString = wrapper.getString();
     object.getInt = wrapper.getInt();
     object.isBoolean = wrapper.isBoolean();
-    object.getBoxedLong = wrapper.getBoxedLong();
+    object.getBoxedLong = wrapper.getBoxedLong() == null ? null : Double.valueOf(wrapper.getBoxedLong().longValue());
     object.getStringType = StringType_JSONOverlay.UNWRAPPER.apply(wrapper.getStringType());
     object.getStringList = wrapper.getStringList().stream()
         .toArray(String[]::new);
@@ -170,7 +169,7 @@ public final class BasicType_JSONOverlay implements BasicType {
     @JsProperty(
         name = "boxedLong"
     )
-    Long getBoxedLong;
+    Double getBoxedLong;
 
     @JsProperty(
         name = "stringType"

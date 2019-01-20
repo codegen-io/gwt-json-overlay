@@ -42,6 +42,12 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
 
     @Override
     public CodeBlock visitPrimitiveType(PrimitiveType type) {
+        if (TypeName.LONG.equals(type.getPrimitiveType())) {
+            return CodeBlock.builder()
+                    .addStatement("return ($T) object.$L", TypeName.LONG, methodName)
+                    .build();
+        }
+
         return CodeBlock.builder()
                 .addStatement("return object.$L", methodName)
                 .build();
@@ -52,8 +58,21 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
         String primitive = type.getBoxedType().unbox().toString();
         String typeName = Character.toTitleCase(primitive.charAt(0)) + primitive.substring(1);
 
+        if (TypeName.BOOLEAN.box().equals(type.getBoxedType())) {
+            return CodeBlock.builder()
+                    .addStatement("return object.$L == $T.undefinedObject() ? null : $T.valueOf($T.as$L(object.$L))", methodName, ClassNames.JSON_HELPER, type.getBoxedType(), ClassNames.JSINTEROP_BASE_JS, typeName, methodName)
+                    .build();
+        }
+
+        if (TypeName.CHAR.box().equals(type.getBoxedType())) {
+            return CodeBlock.builder()
+                    .addStatement("return object.$L == undefinedObject() ? null : $T.valueOf((char) object.$L.intValue())", methodName, type.getBoxedType(), methodName)
+                    .build();
+
+        }
+
         return CodeBlock.builder()
-                .addStatement("return object.$L == $T.undefinedObject() ? null : $T.valueOf($T.as$L(object.$L))", methodName, ClassNames.JSON_HELPER, type.getBoxedType(), ClassNames.JSINTEROP_BASE_JS, typeName, methodName)
+                .addStatement("return object.$L == undefinedObject() ? null : $T.valueOf(object.$L.$LValue())", methodName, type.getBoxedType(), methodName, primitive)
                 .build();
     }
 
@@ -72,7 +91,7 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
         }
 
         if (TypeName.LONG.equals(returnType)) {
-            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalLong.class, OptionalLong.class, methodName);
+            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of((long) object.$L);\n", methodName, OptionalLong.class, OptionalLong.class, methodName);
         }
 
         if (TypeName.DOUBLE.equals(returnType)) {

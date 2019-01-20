@@ -46,7 +46,7 @@ public final class PrimitiveGettersType_JSONOverlay implements PrimitiveGettersT
 
   @Override
   public long getLong() {
-    return object.getLong;
+    return (long) object.getLong;
   }
 
   @Override
@@ -138,7 +138,7 @@ public final class PrimitiveGettersType_JSONOverlay implements PrimitiveGettersT
     @JsProperty(
         name = "long"
     )
-    long getLong;
+    double getLong;
 
     @JsProperty(
         name = "char"

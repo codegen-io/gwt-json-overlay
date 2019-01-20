@@ -159,12 +159,8 @@ public class OverlayGenerator {
     }
 
     private FieldSpec generateProperty(JavaGetter getter) {
-        TypeName type = getter.getPropertyType().accept(new FieldTypeResolver(packageName));
-        return FieldSpec.builder(type, getter.getMethodName())
-                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
-                    .addMember("name", "$S", getter.getPropertyName())
-                    .build())
-                .build();
+        FieldGenerator generator = new FieldGenerator(packageName, getter.getMethodName(), getter.getPropertyName());
+        return getter.getPropertyType().accept(generator);
     }
 
     private MethodSpec generateGetMethod(JavaGetter getter) {

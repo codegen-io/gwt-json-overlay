@@ -1,6 +1,7 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
 import com.squareup.javapoet.AnnotationSpec;
+import com.squareup.javapoet.ArrayTypeName;
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.FieldSpec;
 import com.squareup.javapoet.ParameterizedTypeName;
@@ -36,7 +37,11 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
 
     @Override
     public FieldSpec visitPrimitiveType(PrimitiveType type) {
-        return FieldSpec.builder(type.getPrimitiveType(), methodName)
+        TypeName primitiveType = type.getPrimitiveType();
+        if (TypeName.LONG.equals(primitiveType)) {
+            primitiveType = TypeName.DOUBLE;
+        }
+        return FieldSpec.builder(primitiveType, methodName)
                 .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
                     .addMember("name", "$S", propertyName)
                     .build())
@@ -45,7 +50,11 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
 
     @Override
     public FieldSpec visitBoxedType(BoxedType type) {
-        return FieldSpec.builder(type.getBoxedType(), methodName)
+        TypeName boxedType = type.getBoxedType();
+        if (!TypeName.BOOLEAN.box().equals(boxedType)) {
+            boxedType = TypeName.DOUBLE.box();
+        }
+        return FieldSpec.builder(boxedType, methodName)
                 .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
                     .addMember("name", "$S", propertyName)
                     .build())
@@ -74,7 +83,7 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
     @Override
     public FieldSpec visitListType(ListType type) {
         TypeName typeName = type.getElementType().accept(new FieldTypeResolver(packageName));
-        return FieldSpec.builder(typeName, methodName)
+        return FieldSpec.builder(ArrayTypeName.of(typeName), methodName)
                 .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
                     .addMember("name", "$S", propertyName)
                     .build())
@@ -103,17 +112,31 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
 
     @Override
     public FieldSpec visitEnumType(EnumType type) {
-        throw new UnsupportedOperationException();
+        return FieldSpec.builder(String.class, methodName)
+                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
+                    .addMember("name", "$S", propertyName)
+                    .build())
+                .build();
     }
 
     @Override
     public FieldSpec visitInheritedType(InheritedType type) {
-        throw new UnsupportedOperationException();
+        TypeName name = type.accept(new FieldTypeResolver(packageName));
+        return FieldSpec.builder(name, methodName)
+                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
+                    .addMember("name", "$S", propertyName)
+                    .build())
+                .build();
     }
 
     @Override
     public FieldSpec visitSubType(SubType type) {
-        throw new UnsupportedOperationException();
+        TypeName name = type.accept(new FieldTypeResolver(packageName));
+        return FieldSpec.builder(name, methodName)
+                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
+                    .addMember("name", "$S", propertyName)
+                    .build())
+                .build();
     }
 
     @Override

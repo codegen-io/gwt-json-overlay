@@ -47,7 +47,7 @@ public final class SetterType_JSONOverlay implements SetterType {
 
   @Override
   public Long getBoxedLong() {
-    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(Js.asLong(object.getBoxedLong));
+    return object.getBoxedLong == undefinedObject() ? null : Long.valueOf(object.getBoxedLong.longValue());
   }
 
   @Override
@@ -116,7 +116,7 @@ public final class SetterType_JSONOverlay implements SetterType {
 
   @Override
   public void setBoxedLong(Long value) {
-    object.getBoxedLong = value;
+    object.getBoxedLong = value == null ? null : Double.valueOf(value.longValue());
   }
 
   @Override
@@ -200,21 +200,23 @@ public final class SetterType_JSONOverlay implements SetterType {
     JsObject object = new JsObject();
     object.getString = wrapper.getString();
     object.getInt = wrapper.getInt();
-    object.getBoxedLong = wrapper.getBoxedLong();
+    object.getBoxedLong = wrapper.getBoxedLong() == null ? null : Double.valueOf(wrapper.getBoxedLong().longValue());
     object.getStringType = StringType_JSONOverlay.UNWRAPPER.apply(wrapper.getStringType());
     object.getStringList = wrapper.getStringList().stream()
-            .toArray(String[]::new);
+        .toArray(String[]::new);
     object.getStringTypeList = wrapper.getStringTypeList().stream()
-            .map(StringType_JSONOverlay.UNWRAPPER)
-            .toArray(StringType_JSONOverlay.JsObject[]::new);
-    object.getOptionalString = wrapper.getOptionalString().orElse(null);
-    object.getOptionalStringType = wrapper.getOptionalStringType().map(StringType_JSONOverlay.UNWRAPPER).orElse(null);
+        .map(StringType_JSONOverlay.UNWRAPPER)
+        .toArray(StringType_JSONOverlay.JsObject[]::new);
+    object.getOptionalString = wrapper.getOptionalString()
+        .orElse(null);
+    object.getOptionalStringType = wrapper.getOptionalStringType()
+        .map(StringType_JSONOverlay.UNWRAPPER)
+        .orElse(null);
     object.getEnumType = wrapper.getEnumType().name();
     object.getStringMap = Js.cast(JsPropertyMap.of());
     wrapper.getStringMap().forEach((key, item) -> object.getStringMap.set(key, Optional.ofNullable(item)
         .map(StringType_JSONOverlay.UNWRAPPER)
         .orElse(null)));
-
     return object;
   }
 
@@ -237,7 +239,7 @@ public final class SetterType_JSONOverlay implements SetterType {
     @JsProperty(
         name = "boxedLong"
     )
-    Long getBoxedLong;
+    Double getBoxedLong;
 
     @JsProperty(
         name = "stringType"

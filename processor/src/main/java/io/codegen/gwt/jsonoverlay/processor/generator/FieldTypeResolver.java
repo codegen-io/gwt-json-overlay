@@ -29,6 +29,9 @@ public class FieldTypeResolver implements JavaTypeVisitor<TypeName> {
 
     @Override
     public TypeName visitPrimitiveType(PrimitiveType type) {
+        if (TypeName.LONG.equals(type.getPrimitiveType())) {
+            return TypeName.DOUBLE;
+        }
         return type.getPrimitiveType();
     }
 

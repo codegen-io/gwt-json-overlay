@@ -4,6 +4,7 @@ import java.util.stream.Stream;
 
 import com.squareup.javapoet.ClassName;
 import com.squareup.javapoet.CodeBlock;
+import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
@@ -39,6 +40,12 @@ public class FieldSetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
 
     @Override
     public CodeBlock visitBoxedType(BoxedType type) {
+        if (!TypeName.BOOLEAN.box().equals(type.getBoxedType())) {
+            return CodeBlock.builder()
+                    .addStatement("object.$L = value == null ? null : $T.valueOf(value.$LValue())", propertyName, TypeName.DOUBLE.box(), type.getBoxedType().unbox().toString())
+                    .build();
+
+        }
         return CodeBlock.builder()
                 .addStatement("object.$L = value", propertyName)
                 .build();

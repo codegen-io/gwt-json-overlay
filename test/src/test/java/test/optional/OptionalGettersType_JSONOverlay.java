@@ -40,7 +40,7 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
 
   @Override
   public OptionalLong getOptionalLong() {
-    return object.getOptionalLong == undefinedInt() ? OptionalLong.empty() : OptionalLong.of(object.getOptionalLong);
+    return object.getOptionalLong == undefinedInt() ? OptionalLong.empty() : OptionalLong.of((long) object.getOptionalLong);
   }
 
   @Override
@@ -107,7 +107,7 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
     @JsProperty(
         name = "optionalLong"
     )
-    long getOptionalLong;
+    double getOptionalLong;
 
     @JsProperty(
         name = "optionalDouble"

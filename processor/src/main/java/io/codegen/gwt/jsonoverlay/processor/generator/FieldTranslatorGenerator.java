@@ -43,6 +43,11 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
 
     @Override
     public CodeBlock visitBoxedType(BoxedType type) {
+        if (!TypeName.BOOLEAN.box().equals(type.getBoxedType())) {
+            return CodeBlock.builder()
+                    .addStatement("object.$L = wrapper.$L() == null ? null : Double.valueOf(wrapper.$L().$LValue())", propertyName, methodName, methodName, type.getBoxedType().unbox().toString())
+                    .build();
+        }
         return CodeBlock.builder()
                 .addStatement("object.$L = wrapper.$L()", propertyName, methodName)
                 .build();

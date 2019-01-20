@@ -131,7 +131,8 @@ public class JSONOverlayProcessorTest {
     public void testBoxedGetters() throws IOException {
         Compilation compilation = compiler.compile(
                 JavaFileObjects.forResource("test/boxed/package-info.java"),
-                JavaFileObjects.forResource("test/BoxedGettersType.java")
+                JavaFileObjects.forResource("test/BoxedGettersType.java"),
+                JavaFileObjects.forResource("test/BoxedSettersType.java")
                 );
 
         assertThat(compilation).succeeded();
@@ -139,6 +140,8 @@ public class JSONOverlayProcessorTest {
         assertThat(compilation).generatedSourceFile("test/boxed/BoxedGettersType_JSONOverlay")
             .hasSourceEquivalentTo(JavaFileObjects.forResource("test/boxed/BoxedGettersType_JSONOverlay.java"));
 
+        assertThat(compilation).generatedSourceFile("test/boxed/BoxedSettersType_JSONOverlay")
+            .hasSourceEquivalentTo(JavaFileObjects.forResource("test/boxed/BoxedSettersType_JSONOverlay.java"));
     }
 
     @Test

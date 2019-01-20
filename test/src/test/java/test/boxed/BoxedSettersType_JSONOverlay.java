@@ -8,20 +8,20 @@ import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
 import jsinterop.annotations.JsType;
 import jsinterop.base.Js;
-import test.BoxedGettersType;
+import test.BoxedSettersType;
 
-public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
-  public static final Function<JsObject, BoxedGettersType> WRAPPER = BoxedGettersType_JSONOverlay::wrap;
+public final class BoxedSettersType_JSONOverlay implements BoxedSettersType {
+  public static final Function<JsObject, BoxedSettersType> WRAPPER = BoxedSettersType_JSONOverlay::wrap;
 
-  public static final Function<BoxedGettersType, JsObject> UNWRAPPER = BoxedGettersType_JSONOverlay::unwrap;
+  public static final Function<BoxedSettersType, JsObject> UNWRAPPER = BoxedSettersType_JSONOverlay::unwrap;
 
   private final JsObject object;
 
-  protected BoxedGettersType_JSONOverlay() {
+  protected BoxedSettersType_JSONOverlay() {
     this.object = new JsObject();
   }
 
-  protected BoxedGettersType_JSONOverlay(JsObject object) {
+  protected BoxedSettersType_JSONOverlay(JsObject object) {
     this.object = object;
   }
 
@@ -65,15 +65,55 @@ public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
     return object.getDouble == undefinedObject() ? null : Double.valueOf(object.getDouble.doubleValue());
   }
 
-  public static BoxedGettersType parse(String json, JsonFactory factory) {
-    return factory.createParser(BoxedGettersType_JSONOverlay.WRAPPER).fromJSON(json);
+  @Override
+  public void setBoolean(Boolean value) {
+    object.getBoolean = value;
   }
 
-  public static String serialize(BoxedGettersType object, JsonFactory factory) {
-    return factory.createSerializer(BoxedGettersType_JSONOverlay.UNWRAPPER).toJSON(object);
+  @Override
+  public void setByte(Byte value) {
+    object.getByte = value == null ? null : Double.valueOf(value.byteValue());
   }
 
-  public static BoxedGettersType create() {
+  @Override
+  public void setShort(Short value) {
+    object.getShort = value == null ? null : Double.valueOf(value.shortValue());
+  }
+
+  @Override
+  public void setInt(Integer value) {
+    object.getInt = value == null ? null : Double.valueOf(value.intValue());
+  }
+
+  @Override
+  public void setLong(Long value) {
+    object.getLong = value == null ? null : Double.valueOf(value.longValue());
+  }
+
+  @Override
+  public void setChar(Character value) {
+    object.getChar = value == null ? null : Double.valueOf(value.charValue());
+  }
+
+  @Override
+  public void setFloat(Float value) {
+    object.getFloat = value == null ? null : Double.valueOf(value.floatValue());
+  }
+
+  @Override
+  public void setDouble(Double value) {
+    object.getDouble = value == null ? null : Double.valueOf(value.doubleValue());
+  }
+
+  public static BoxedSettersType parse(String json, JsonFactory factory) {
+    return factory.createParser(BoxedSettersType_JSONOverlay.WRAPPER).fromJSON(json);
+  }
+
+  public static String serialize(BoxedSettersType object, JsonFactory factory) {
+    return factory.createSerializer(BoxedSettersType_JSONOverlay.UNWRAPPER).toJSON(object);
+  }
+
+  public static BoxedSettersType create() {
     JsObject object = new JsObject();
     object.getBoolean = null;
     object.getByte = null;
@@ -86,16 +126,16 @@ public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
     return wrap(object);
   }
 
-  public static BoxedGettersType wrap(Object object) {
+  public static BoxedSettersType wrap(Object object) {
     if (object instanceof JsObject) {
-      return new BoxedGettersType_JSONOverlay((JsObject) object);
+      return new BoxedSettersType_JSONOverlay((JsObject) object);
     }
-    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.boxed.BoxedGettersType_JSONOverlay.JsObject");
+    throw new IllegalArgumentException("Object '" + object + "' isn't of type test.boxed.BoxedSettersType_JSONOverlay.JsObject");
   }
 
-  public static JsObject unwrap(BoxedGettersType wrapper) {
-    if (wrapper instanceof BoxedGettersType_JSONOverlay) {
-      return ((BoxedGettersType_JSONOverlay) wrapper).object;
+  public static JsObject unwrap(BoxedSettersType wrapper) {
+    if (wrapper instanceof BoxedSettersType_JSONOverlay) {
+      return ((BoxedSettersType_JSONOverlay) wrapper).object;
     }
     JsObject object = new JsObject();
     object.getBoolean = wrapper.getBoolean();
