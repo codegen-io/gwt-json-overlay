@@ -15,4 +15,12 @@ public interface OptionalGettersType {
 
     OptionalDouble getOptionalDouble();
 
+    void setOptionalString(Optional<String> value);
+
+    void setOptionalInt(OptionalInt value);
+
+    void setOptionalLong(OptionalLong value);
+
+    void setOptionalDouble(OptionalDouble value);
+
 }

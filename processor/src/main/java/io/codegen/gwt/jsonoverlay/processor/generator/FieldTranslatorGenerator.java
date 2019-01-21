@@ -66,9 +66,13 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
         if (TypeName.INT.equals(returnType)
                 || TypeName.LONG.equals(returnType)
                 || TypeName.DOUBLE.equals(returnType)) {
+            String name = Character.toTitleCase(returnType.toString().charAt(0)) + returnType.toString().substring(1);
             return CodeBlock.builder()
-                    .add("object.$L = wrapper.$L()\n", propertyName, methodName)
-                    .add("\t.orElse(undefinedInt());\n")
+                    .beginControlFlow("if (wrapper.$L().isPresent())", methodName)
+                    .addStatement("object.$L = $T.valueOf(wrapper.$L().getAs$L())", propertyName, TypeName.DOUBLE.box(), methodName, name)
+                    .nextControlFlow("else")
+                    .addStatement("object.$L = null", propertyName)
+                    .endControlFlow()
                     .build();
         }
 

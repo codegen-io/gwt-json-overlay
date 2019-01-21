@@ -60,8 +60,19 @@ public class FieldSetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
 
     @Override
     public CodeBlock visitOptionalType(OptionalType type) {
-        CodeBlock mapper = type.getElementType().accept(new FieldSetterMapperGenerator(packageName));
+        TypeName fieldType = type.getElementType().accept(new ReturnTypeResolver());
+        if (TypeName.INT.equals(fieldType) || TypeName.LONG.equals(fieldType) || TypeName.DOUBLE.equals(fieldType)) {
+            String name = Character.toTitleCase(fieldType.toString().charAt(0)) + fieldType.toString().substring(1);
+            return CodeBlock.builder()
+                    .beginControlFlow("if (value.isPresent())")
+                    .addStatement("object.$L = $T.valueOf(value.getAs$L())", propertyName, TypeName.DOUBLE.box(), name)
+                    .nextControlFlow("else")
+                    .addStatement("object.$L = null", propertyName)
+                    .endControlFlow()
+                    .build();
+        }
 
+        CodeBlock mapper = type.getElementType().accept(new FieldSetterMapperGenerator(packageName));
         return CodeBlock.builder()
                 .addStatement(Stream.of(
                         CodeBlock.of("object.$L = value", propertyName),

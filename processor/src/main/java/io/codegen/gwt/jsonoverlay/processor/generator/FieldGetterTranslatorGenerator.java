@@ -87,15 +87,15 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
     public CodeBlock visitOptionalType(OptionalType type) {
         TypeName returnType = type.getElementType().accept(new ReturnTypeResolver());
         if (TypeName.INT.equals(returnType)) {
-            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalInt.class, OptionalInt.class, methodName);
+            return CodeBlock.of("return object.$L == null ? $T.empty() : $T.of(object.$L.intValue());\n", methodName, OptionalInt.class, OptionalInt.class, methodName);
         }
 
         if (TypeName.LONG.equals(returnType)) {
-            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of((long) object.$L);\n", methodName, OptionalLong.class, OptionalLong.class, methodName);
+            return CodeBlock.of("return object.$L == null ? $T.empty() : $T.of(object.$L.longValue());\n", methodName, OptionalLong.class, OptionalLong.class, methodName);
         }
 
         if (TypeName.DOUBLE.equals(returnType)) {
-            return CodeBlock.of("return object.$L == undefinedInt() ? $T.empty() : $T.of(object.$L);\n", methodName, OptionalDouble.class, OptionalDouble.class, methodName);
+            return CodeBlock.of("return object.$L == null ? $T.empty() : $T.of(object.$L.doubleValue());\n", methodName, OptionalDouble.class, OptionalDouble.class, methodName);
         }
 
         CodeBlock mapper = type.getElementType().accept(new FieldGetterMapperGenerator(packageName));

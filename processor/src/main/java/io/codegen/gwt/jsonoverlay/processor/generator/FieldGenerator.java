@@ -73,6 +73,19 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
     @Override
     public FieldSpec visitOptionalType(OptionalType type) {
         TypeName typeName = type.getElementType().accept(new FieldTypeResolver(packageName));
+
+        if (TypeName.INT.equals(typeName)) {
+            typeName = TypeName.DOUBLE.box();
+        }
+
+        if (TypeName.LONG.equals(typeName)) {
+            typeName = TypeName.DOUBLE.box();
+        }
+
+        if (TypeName.DOUBLE.equals(typeName)) {
+            typeName = TypeName.DOUBLE.box();
+        }
+
         return FieldSpec.builder(typeName, methodName)
                 .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
                     .addMember("name", "$S", propertyName)

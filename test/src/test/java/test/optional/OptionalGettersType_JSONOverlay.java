@@ -35,17 +35,50 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
 
   @Override
   public OptionalInt getOptionalInt() {
-    return object.getOptionalInt == undefinedInt() ? OptionalInt.empty() : OptionalInt.of(object.getOptionalInt);
+    return object.getOptionalInt == null ? OptionalInt.empty() : OptionalInt.of(object.getOptionalInt.intValue());
   }
 
   @Override
   public OptionalLong getOptionalLong() {
-    return object.getOptionalLong == undefinedInt() ? OptionalLong.empty() : OptionalLong.of((long) object.getOptionalLong);
+    return object.getOptionalLong == null ? OptionalLong.empty() : OptionalLong.of(object.getOptionalLong.longValue());
   }
 
   @Override
   public OptionalDouble getOptionalDouble() {
-    return object.getOptionalDouble == undefinedInt() ? OptionalDouble.empty() : OptionalDouble.of(object.getOptionalDouble);
+    return object.getOptionalDouble == null ? OptionalDouble.empty() : OptionalDouble.of(object.getOptionalDouble.doubleValue());
+  }
+
+  @Override
+  public void setOptionalString(Optional<String> value) {
+    object.getOptionalString = value
+        .orElse(null);
+  }
+
+  @Override
+  public void setOptionalInt(OptionalInt value) {
+    if (value.isPresent()) {
+      object.getOptionalInt = Double.valueOf(value.getAsInt());
+    } else {
+      object.getOptionalInt = null;
+    }
+  }
+
+  @Override
+  public void setOptionalLong(OptionalLong value) {
+    if (value.isPresent()) {
+      object.getOptionalLong = Double.valueOf(value.getAsLong());
+    } else {
+      object.getOptionalLong = null;
+    }
+  }
+
+  @Override
+  public void setOptionalDouble(OptionalDouble value) {
+    if (value.isPresent()) {
+      object.getOptionalDouble = Double.valueOf(value.getAsDouble());
+    } else {
+      object.getOptionalDouble = null;
+    }
   }
 
   public static OptionalGettersType parse(String json, JsonFactory factory) {
@@ -59,9 +92,9 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
   public static OptionalGettersType create() {
     JsObject object = new JsObject();
     object.getOptionalString = null;
-    object.getOptionalInt = undefinedInt();
-    object.getOptionalLong = undefinedInt();
-    object.getOptionalDouble = undefinedInt();
+    object.getOptionalInt = null;
+    object.getOptionalLong = null;
+    object.getOptionalDouble = null;
     return wrap(object);
   }
 
@@ -79,12 +112,21 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
     JsObject object = new JsObject();
     object.getOptionalString = wrapper.getOptionalString()
         .orElse(null);
-    object.getOptionalInt = wrapper.getOptionalInt()
-        .orElse(undefinedInt());
-    object.getOptionalLong = wrapper.getOptionalLong()
-        .orElse(undefinedInt());
-    object.getOptionalDouble = wrapper.getOptionalDouble()
-        .orElse(undefinedInt());
+    if (wrapper.getOptionalInt().isPresent()) {
+      object.getOptionalInt = Double.valueOf(wrapper.getOptionalInt().getAsInt());
+    } else {
+      object.getOptionalInt = null;
+    }
+    if (wrapper.getOptionalLong().isPresent()) {
+      object.getOptionalLong = Double.valueOf(wrapper.getOptionalLong().getAsLong());
+    } else {
+      object.getOptionalLong = null;
+    }
+    if (wrapper.getOptionalDouble().isPresent()) {
+      object.getOptionalDouble = Double.valueOf(wrapper.getOptionalDouble().getAsDouble());
+    } else {
+      object.getOptionalDouble = null;
+    }
     return object;
   }
 
@@ -102,16 +144,16 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
     @JsProperty(
         name = "optionalInt"
     )
-    int getOptionalInt;
+    Double getOptionalInt;
 
     @JsProperty(
         name = "optionalLong"
     )
-    double getOptionalLong;
+    Double getOptionalLong;
 
     @JsProperty(
         name = "optionalDouble"
     )
-    double getOptionalDouble;
+    Double getOptionalDouble;
   }
 }
