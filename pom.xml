@@ -52,8 +52,8 @@
     <compile.testing.version>0.15</compile.testing.version>
     <gwt.version>2.8.2</gwt.version>
     <immutables.version>2.7.5</immutables.version>
-    <jackson.version>2.9.9.3</jackson.version>
-    <jackson.annotations.version>2.9.9</jackson.annotations.version>
+    <jackson.version>2.9.10</jackson.version>
+    <jackson.annotations.version>2.9.10</jackson.annotations.version>
     <javapoet.version>1.11.1</javapoet.version>
     <jsinterop.version>1.0.2</jsinterop.version>
     <jsinterop.base.version>1.0.0-RC1</jsinterop.base.version>
