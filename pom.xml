@@ -58,7 +58,7 @@
     <jsinterop.version>1.0.2</jsinterop.version>
     <jsinterop.base.version>1.0.0-RC1</jsinterop.base.version>
     <json.version>20180813</json.version>
-    <junit.version>4.12</junit.version>
+    <junit.version>4.13.1</junit.version>
     <log4j.version>1.2.17</log4j.version>
   </properties>
 
