@@ -59,7 +59,6 @@
     <jsinterop.base.version>1.0.0</jsinterop.base.version>
     <json.version>20200518</json.version>
     <junit.version>4.13.1</junit.version>
-    <log4j.version>1.2.17</log4j.version>
   </properties>
 
   <modules>
@@ -101,11 +100,6 @@
         <groupId>junit</groupId>
         <artifactId>junit</artifactId>
         <version>${junit.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>log4j</groupId>
-        <artifactId>log4j</artifactId>
-        <version>${log4j.version}</version>
       </dependency>
       <dependency>
         <groupId>org.immutables</groupId>
