@@ -16,6 +16,7 @@ import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -113,6 +114,11 @@ public class OverlayConvertMethodGenerator implements JavaTypeVisitor<MethodSpec
 
     @Override
     public MethodSpec visitMapType(MapType type) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public MethodSpec visitDateType(DateType type) {
         throw new UnsupportedOperationException();
     }
 

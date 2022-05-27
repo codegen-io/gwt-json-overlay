@@ -1,5 +1,7 @@
 package io.codegen.gwt.jsonoverlay.processor.builder;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -27,6 +29,8 @@ import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.TypeMapper;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.ClassType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -118,7 +122,15 @@ public class TypeResolver extends SimpleTypeVisitor8<JavaType, Void> {
                         .build();
             }
 
-            throw new IllegalArgumentException("Unknown class " + name);
+            if (ClassName.get(LocalDateTime.class).equals(name) || ClassName.get(Date.class).equals(name)) {
+                return DateType.builder()
+                        .dateType(name)
+                        .build();
+            }
+
+            return ClassType.builder()
+                    .classType(name)
+                    .build();
         }
 
         if (ElementKind.INTERFACE.equals(kind)) {

@@ -8,6 +8,7 @@ import com.squareup.javapoet.TypeName;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -59,6 +60,11 @@ public class FieldTypeResolver implements JavaTypeVisitor<TypeName> {
     public TypeName visitMapType(MapType type) {
         return ParameterizedTypeName.get(ClassNames.JSINTEROP_BASE_JSPROPERTYMAP,
                 type.getValueType().accept(new FieldTypeResolver(packageName)));
+    }
+
+    @Override
+    public TypeName visitDateType(DateType type) {
+        return type.getDateType();
     }
 
     @Override

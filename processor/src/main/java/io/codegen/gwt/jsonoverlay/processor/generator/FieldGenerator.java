@@ -10,6 +10,7 @@ import com.squareup.javapoet.TypeName;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -110,6 +111,15 @@ public class FieldGenerator implements JavaTypeVisitor<FieldSpec> {
                 .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
                     .addMember("name", "$S", propertyName)
                     .build())
+                .build();
+    }
+
+    @Override
+    public FieldSpec visitDateType(DateType type) {
+        return FieldSpec.builder(String.class, methodName)
+                .addAnnotation(AnnotationSpec.builder(ClassNames.JSINTEROP_JSPROPERTY)
+                        .addMember("name", "$S", propertyName)
+                        .build())
                 .build();
     }
 

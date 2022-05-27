@@ -13,6 +13,7 @@ import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -66,6 +67,11 @@ public class ReturnTypeResolver implements JavaTypeVisitor<TypeName> {
     public TypeName visitMapType(MapType type) {
         TypeName element = type.getValueType().accept(new ReturnTypeResolver());
         return ParameterizedTypeName.get(ClassName.get(Map.class), ClassName.get(String.class), element);
+    }
+
+    @Override
+    public TypeName visitDateType(DateType type) {
+        return type.getDateType();
     }
 
     @Override

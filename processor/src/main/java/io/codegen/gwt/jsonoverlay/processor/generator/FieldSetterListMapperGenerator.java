@@ -5,6 +5,7 @@ import com.squareup.javapoet.CodeBlock;
 
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -58,6 +59,11 @@ public class FieldSetterListMapperGenerator implements JavaTypeVisitor<CodeBlock
     @Override
     public CodeBlock visitMapType(MapType type) {
         throw new UnsupportedOperationException("Mapper not supported for map type " + type.getValueType());
+    }
+
+    @Override
+    public CodeBlock visitDateType(DateType type) {
+        return EMPTY_CODEBLOCK;
     }
 
     @Override

@@ -9,6 +9,7 @@ import com.squareup.javapoet.TypeName;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -116,6 +117,13 @@ public class FieldTranslatorGenerator implements JavaTypeVisitor<CodeBlock> {
                         CodeBlock.of(".orElse(null)))"))
                         .filter(code -> !code.isEmpty())
                         .collect(CodeBlock.joining("\n")))
+                .build();
+    }
+
+    @Override
+    public CodeBlock visitDateType(DateType type) {
+        return CodeBlock.builder()
+                .addStatement("object.$L = wrapper.$L().toString()", propertyName, methodName)
                 .build();
     }
 

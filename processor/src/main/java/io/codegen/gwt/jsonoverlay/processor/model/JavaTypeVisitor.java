@@ -1,6 +1,8 @@
 package io.codegen.gwt.jsonoverlay.processor.model;
 
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.ClassType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -27,6 +29,14 @@ public interface JavaTypeVisitor<R> {
     R visitMapType(MapType type);
 
     R visitOverlayType(OverlayType type);
+
+    default R visitClassType(ClassType type) {
+        return visitOverlayType(OverlayType.builder()
+                .overlayType(type.getClassType())
+                .build());
+    }
+
+    R visitDateType(DateType type);
 
     R visitEnumType(EnumType type);
 

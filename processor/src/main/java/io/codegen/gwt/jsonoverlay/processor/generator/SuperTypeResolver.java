@@ -8,6 +8,7 @@ import com.squareup.javapoet.ClassName;
 
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -49,6 +50,11 @@ public class SuperTypeResolver implements JavaTypeVisitor<ClassName> {
     @Override
     public ClassName visitMapType(MapType type) {
         return ClassName.get(Map.class);
+    }
+
+    @Override
+    public ClassName visitDateType(DateType type) {
+        throw new UnsupportedOperationException();
     }
 
     @Override

@@ -1,7 +1,9 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.OptionalDouble;
@@ -18,6 +20,7 @@ import com.squareup.javapoet.TypeName;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -146,6 +149,22 @@ public class FieldGetterTranslatorGenerator implements JavaTypeVisitor<CodeBlock
                         .filter(code -> !code.isEmpty())
                         .collect(CodeBlock.joining("\n")))
                 .build();
+    }
+
+    @Override
+    public CodeBlock visitDateType(DateType type) {
+        ClassName date = type.getDateType();
+
+        if (ClassName.get(Date.class).equals(date)) {
+            return CodeBlock.builder()
+                    .addStatement("return object.$L == $T.undefinedObject() ? null : $T.valueOf(object.$L)", methodName, ClassNames.JSON_HELPER, Timestamp.class, methodName)
+                    .build();
+        }
+
+        return CodeBlock.builder()
+                .addStatement("return object.$L == $T.undefinedObject() ? null : $T.parse(object.$L)", methodName, ClassNames.JSON_HELPER, date, methodName)
+                .addStatement("return $T.parse(object.$L)", date, methodName)
+            .build();
     }
 
     @Override

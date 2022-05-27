@@ -5,6 +5,7 @@ import com.squareup.javapoet.TypeName;
 
 import io.codegen.gwt.jsonoverlay.processor.model.JavaTypeVisitor;
 import io.codegen.gwt.jsonoverlay.processor.model.types.BoxedType;
+import io.codegen.gwt.jsonoverlay.processor.model.types.DateType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.EnumType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.InheritedType;
 import io.codegen.gwt.jsonoverlay.processor.model.types.JavaScriptObjectType;
@@ -49,6 +50,11 @@ public class InitializerStatementGenerator implements JavaTypeVisitor<CodeBlock>
 
     @Override
     public CodeBlock visitMapType(MapType type) {
+        return CodeBlock.of("null");
+    }
+
+    @Override
+    public CodeBlock visitDateType(DateType type) {
         return CodeBlock.of("null");
     }
 

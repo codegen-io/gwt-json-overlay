@@ -18,6 +18,7 @@ import javax.lang.model.type.TypeKind;
 
 import com.squareup.javapoet.ClassName;
 
+import com.squareup.javapoet.MethodSpec;
 import io.codegen.gwt.jsonoverlay.processor.TypeMapper;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaGetter;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
@@ -52,6 +53,8 @@ public class ModelBuilder {
                 .filter(method -> !method.isDefault())
                 .filter(method -> !method.getModifiers().contains(Modifier.STATIC))
                 .filter(method -> !TypeKind.VOID.equals(method.getReturnType().getKind()))
+                .filter(method -> method.getParameters().isEmpty())
+                .filter(method -> !method.getSimpleName().contentEquals("hashCode") && !method.getSimpleName().contentEquals("toString") )
                 .collect(Collectors.toList());
 
         return IntStream.range(0, methods.size())
@@ -105,14 +108,14 @@ public class ModelBuilder {
     }
 
     private Stream<? extends Element> getAllInterfaceMembers(TypeElement type) {
-        if (!ElementKind.INTERFACE.equals(type.getKind())) {
-            throw new IllegalArgumentException("Unexpected type " + type);
+        if (ElementKind.INTERFACE.equals(type.getKind()) || ElementKind.CLASS.equals(type.getKind())) {
+            Stream<? extends Element> inherited = type.getInterfaces().stream()
+                .flatMap(mirror -> getAllInterfaceMembers(TypeMapper.asType(TypeMapper.asDeclaredType(mirror).asElement())));
+
+            return Stream.concat(type.getEnclosedElements().stream(), inherited);
         }
 
-        Stream<? extends Element> inherited = type.getInterfaces().stream()
-            .flatMap(mirror -> getAllInterfaceMembers(TypeMapper.asType(TypeMapper.asDeclaredType(mirror).asElement())));
-
-        return Stream.concat(type.getEnclosedElements().stream(), inherited);
+        throw new IllegalArgumentException("Unexpected type " + type);
     }
 
 }

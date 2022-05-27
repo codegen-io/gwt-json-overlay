@@ -17,6 +17,7 @@ import com.squareup.javapoet.TypeSpec;
 import io.codegen.gwt.jsonoverlay.processor.ClassNames;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaGetter;
 import io.codegen.gwt.jsonoverlay.processor.model.JavaInterface;
+import io.codegen.gwt.jsonoverlay.processor.model.types.ClassType;
 
 public class OverlayGenerator {
 
@@ -34,8 +35,13 @@ public class OverlayGenerator {
         ClassName overlayName = ClassName.get(packageName, superType.simpleName() + OVERLAY_SUFFIX);
 
         TypeSpec.Builder typeSpec = TypeSpec.classBuilder(overlayName)
-                .addModifiers(Modifier.PUBLIC, Modifier.FINAL)
-                .addSuperinterface(superType);
+                .addModifiers(Modifier.PUBLIC, Modifier.FINAL);
+
+        if (javaInterface.getType() instanceof ClassType) {
+            typeSpec.superclass(superType);
+        } else {
+            typeSpec.addSuperinterface(superType);
+        }
 
         typeSpec.addField(FieldSpec.builder(ParameterizedTypeName.get(ClassName.get(Function.class),
                 overlayName.nestedClass("JsObject"), superType), "WRAPPER")
