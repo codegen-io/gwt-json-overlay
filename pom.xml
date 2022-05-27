@@ -58,7 +58,7 @@
     <jsinterop.version>1.0.2</jsinterop.version>
     <jsinterop.base.version>1.0.0</jsinterop.base.version>
     <json.version>20200518</json.version>
-    <junit.version>4.13.1</junit.version>
+    <junit.version>4.13.2</junit.version>
   </properties>
 
   <modules>
