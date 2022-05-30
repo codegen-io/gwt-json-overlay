@@ -3,6 +3,8 @@ package test.optional;
 import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
+
+import java.util.Objects;
 import java.util.Optional;
 import java.util.OptionalDouble;
 import java.util.OptionalInt;
@@ -79,6 +81,19 @@ public final class OptionalGettersType_JSONOverlay implements OptionalGettersTyp
     } else {
       object.getOptionalDouble = null;
     }
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof OptionalGettersType_JSONOverlay)) return false;
+    OptionalGettersType_JSONOverlay that = (OptionalGettersType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static OptionalGettersType parse(String json, JsonFactory factory) {

@@ -3,6 +3,8 @@ package test.boxed;
 import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
+
+import java.util.Objects;
 import java.util.function.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -103,6 +105,19 @@ public final class BoxedSettersType_JSONOverlay implements BoxedSettersType {
   @Override
   public void setDouble(Double value) {
     object.getDouble = value == null ? null : Double.valueOf(value.doubleValue());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof BoxedSettersType_JSONOverlay)) return false;
+    BoxedSettersType_JSONOverlay that = (BoxedSettersType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static BoxedSettersType parse(String json, JsonFactory factory) {

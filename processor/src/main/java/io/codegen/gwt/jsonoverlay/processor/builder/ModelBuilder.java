@@ -54,7 +54,8 @@ public class ModelBuilder {
                 .filter(method -> !method.getModifiers().contains(Modifier.STATIC))
                 .filter(method -> !TypeKind.VOID.equals(method.getReturnType().getKind()))
                 .filter(method -> method.getParameters().isEmpty())
-                .filter(method -> !method.getSimpleName().contentEquals("hashCode") && !method.getSimpleName().contentEquals("toString") )
+                .filter(method -> !method.getSimpleName().contentEquals("hashCode")
+                        && !method.getSimpleName().contentEquals("toString") )
                 .collect(Collectors.toList());
 
         return IntStream.range(0, methods.size())
@@ -64,7 +65,10 @@ public class ModelBuilder {
                     .limit(index)
                     .noneMatch(method -> name.equals(method.getSimpleName()));
             })
-            .mapToObj(index -> buildGetter(methods.get(index), hasSetter(element, methods.get(index).getSimpleName().toString())))
+            .mapToObj(index -> buildGetter(
+                    methods.get(index),
+                    hasSetter(element, methods.get(index).getSimpleName().toString()),
+                    hasFluentSetter(element, methods.get(index).getSimpleName().toString())))
             .collect(Collectors.toList());
     }
 
@@ -73,7 +77,7 @@ public class ModelBuilder {
         if (name.startsWith("get") || name.startsWith("has")) {
             setter = "set" + name.substring(3);
         } else if (name.startsWith("is")) {
-            setter = "set" + name.substring(3);
+            setter = "set" + name.substring(2);
         } else {
             return false;
         }
@@ -86,12 +90,24 @@ public class ModelBuilder {
                 .anyMatch(method -> method.getSimpleName().toString().equals(setter));
     }
 
-    private JavaGetter buildGetter(ExecutableElement element, boolean hasSetter) {
+    private boolean hasFluentSetter(TypeElement element, String name) {
+        String accessor = getPropertyName(name);
+
+        return getAllInterfaceMembers(element)
+                .filter(type -> ElementKind.METHOD.equals(type.getKind()))
+                .map(TypeMapper::asExecutable)
+                .filter(method -> !method.isDefault())
+                .filter(method -> element.asType().equals(method.getReturnType()))
+                .anyMatch(method -> method.getSimpleName().toString().equals(accessor));
+    }
+
+    private JavaGetter buildGetter(ExecutableElement element, boolean hasSetter, boolean fluentAccessors) {
         JavaGetter getter = JavaGetter.builder()
                 .methodName(element.getSimpleName().toString())
                 .propertyName(getPropertyName(element.getSimpleName().toString()))
                 .propertyType(element.getReturnType().accept(new TypeResolver(this::addToModel), null))
                 .hasSetter(hasSetter)
+                .hasFluentSetter(fluentAccessors)
                 .build();
 
         return getter;

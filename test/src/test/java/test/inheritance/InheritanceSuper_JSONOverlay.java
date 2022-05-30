@@ -3,6 +3,8 @@ package test.inheritance;
 import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
+
+import java.util.Objects;
 import java.util.function.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -29,6 +31,19 @@ public final class InheritanceSuper_JSONOverlay implements InheritanceSuper {
   @Override
   public String getKind() {
     return object.getKind;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof InheritanceSuper_JSONOverlay)) return false;
+    InheritanceSuper_JSONOverlay that = (InheritanceSuper_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static InheritanceSuper parse(String json, JsonFactory factory) {

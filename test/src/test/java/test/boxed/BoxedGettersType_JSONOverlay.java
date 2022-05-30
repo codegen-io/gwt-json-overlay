@@ -3,6 +3,8 @@ package test.boxed;
 import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
+
+import java.util.Objects;
 import java.util.function.Function;
 import jsinterop.annotations.JsPackage;
 import jsinterop.annotations.JsProperty;
@@ -63,6 +65,20 @@ public final class BoxedGettersType_JSONOverlay implements BoxedGettersType {
   @Override
   public Double getDouble() {
     return object.getDouble == undefinedObject() ? null : Double.valueOf(object.getDouble.doubleValue());
+  }
+
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof BoxedGettersType_JSONOverlay)) return false;
+    BoxedGettersType_JSONOverlay that = (BoxedGettersType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static BoxedGettersType parse(String json, JsonFactory factory) {

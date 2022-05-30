@@ -25,6 +25,8 @@ public interface JavaGetter {
 
     boolean hasSetter();
 
+    boolean hasFluentSetter();
+
     public static Builder builder() {
         return new Builder();
     }

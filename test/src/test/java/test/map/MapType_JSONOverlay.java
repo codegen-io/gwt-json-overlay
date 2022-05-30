@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,6 +46,19 @@ public final class MapType_JSONOverlay implements MapType {
         key -> Optional.ofNullable(object.getStringMap.get(key))
         .map(StringType_JSONOverlay.WRAPPER)
         .orElse(null)));
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof MapType_JSONOverlay)) return false;
+    MapType_JSONOverlay that = (MapType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static MapType parse(String json, JsonFactory factory) {

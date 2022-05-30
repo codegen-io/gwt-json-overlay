@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -161,6 +162,25 @@ public final class SetterType_JSONOverlay implements SetterType {
     value.forEach((key, item) -> object.getStringMap.set(key, Optional.ofNullable(item)
         .map(StringType_JSONOverlay.UNWRAPPER)
         .orElse(null)));
+  }
+
+  @Override
+  public SetterType string(String value) {
+    object.getString = value;
+    return this;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof SetterType_JSONOverlay)) return false;
+    SetterType_JSONOverlay that = (SetterType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static SetterType parse(String json, JsonFactory factory) {

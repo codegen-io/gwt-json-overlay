@@ -1,5 +1,6 @@
 package io.codegen.gwt.jsonoverlay.processor.generator;
 
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -94,6 +95,33 @@ public class OverlayGenerator {
                 .filter(JavaGetter::hasSetter)
                 .map(this::generateSetMethod)
                 .collect(Collectors.toList()));
+
+        typeSpec.addMethods(javaInterface.getGetters().stream()
+                .filter(JavaGetter::hasFluentSetter)
+                .map(getter -> generateFluentSetMethod(javaInterface, getter))
+                .collect(Collectors.toList()));
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("equals")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .addParameter(Object.class, "o")
+                .returns(ClassName.BOOLEAN)
+                .addCode(CodeBlock.builder()
+                        .addStatement("if (this == o) return true")
+                        .addStatement("if (!(o instanceof $T)) return false", overlayName)
+                        .addStatement("$T that = ($T) o", overlayName, overlayName)
+                        .addStatement("return object.equals(that.object)")
+                        .build())
+                .build());
+
+        typeSpec.addMethod(MethodSpec.methodBuilder("hashCode")
+                .addModifiers(Modifier.PUBLIC)
+                .addAnnotation(Override.class)
+                .returns(ClassName.INT)
+                .addCode(CodeBlock.builder()
+                        .addStatement("return $T.hash(object)", Objects.class)
+                        .build())
+                .build());
 
         typeSpec.addMethod(MethodSpec.methodBuilder("parse")
                 .addModifiers(Modifier.PUBLIC, Modifier.STATIC)
@@ -192,6 +220,23 @@ public class OverlayGenerator {
                 .addModifiers(Modifier.PUBLIC)
                 .addParameter(returnType, "value")
                 .addCode(translator)
+                .build();
+    }
+
+    private MethodSpec generateFluentSetMethod(JavaInterface parent, JavaGetter getter) {
+        CodeBlock translator = getter.getPropertyType().accept(new FieldSetterTranslatorGenerator(packageName, getter.getMethodName()));
+
+        TypeName propertyType = getter.getPropertyType().accept(new ReturnTypeResolver());
+
+        ClassName returnType = parent.getType().accept(new SuperTypeResolver());
+
+        return MethodSpec.methodBuilder(getter.getPropertyName())
+                .addAnnotation(Override.class)
+                .addModifiers(Modifier.PUBLIC)
+                .addParameter(propertyType, "value")
+                .returns(returnType)
+                .addCode(translator)
+                .addStatement("return this")
                 .build();
     }
 

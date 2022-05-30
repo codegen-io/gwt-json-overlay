@@ -5,6 +5,7 @@ import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -89,6 +90,19 @@ public final class BasicType_JSONOverlay implements BasicType {
   @Override
   public SomeEnum getEnumType() {
     return SomeEnum.valueOf(object.getEnumType);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof BasicType_JSONOverlay)) return false;
+    BasicType_JSONOverlay that = (BasicType_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static BasicType parse(String json, JsonFactory factory) {

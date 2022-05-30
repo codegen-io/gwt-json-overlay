@@ -5,6 +5,7 @@ import static io.codegen.gwt.jsonoverlay.runtime.gwt.JsHelper.*;
 import io.codegen.gwt.jsonoverlay.runtime.JsonFactory;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -49,6 +50,19 @@ public final class InheritanceContainer_JSONOverlay implements InheritanceContai
     return Stream.of(object.getAllKindsOfInstances)
         .map(InheritanceSuper_JSONOverlay.WRAPPER)
         .collect(Collectors.toList());
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof InheritanceContainer_JSONOverlay)) return false;
+    InheritanceContainer_JSONOverlay that = (InheritanceContainer_JSONOverlay) o;
+    return object.equals(that.object);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(object);
   }
 
   public static InheritanceContainer parse(String json, JsonFactory factory) {

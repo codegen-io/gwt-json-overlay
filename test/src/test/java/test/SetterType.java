@@ -46,4 +46,5 @@ public interface SetterType {
 
     void setStringMap(Map<String, StringType> value);
 
+    SetterType string(String value);
 }
