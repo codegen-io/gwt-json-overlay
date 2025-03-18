@@ -57,7 +57,7 @@
     <javapoet.version>1.13.0</javapoet.version>
     <jsinterop.version>1.0.2</jsinterop.version>
     <jsinterop.base.version>1.0.0</jsinterop.base.version>
-    <json.version>20230227</json.version>
+    <json.version>20231013</json.version>
     <junit.version>4.13.2</junit.version>
   </properties>
 
